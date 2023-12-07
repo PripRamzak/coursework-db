@@ -1,98 +1,138 @@
 const sequelize = require('../db')
 const { DataTypes } = require('sequelize')
 
-const User = sequelize.define('user',
+
+const Account = sequelize.define('accounts',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         email: { type: DataTypes.STRING, unique: true, allowNull: false },
         password: { type: DataTypes.STRING, allowNull: false },
-        role: { type: DataTypes.STRING, defaultValue: "USER" }
-    })
-
-const Basket = sequelize.define('basket',
+        status: { type: DataTypes.ENUM('Активирован', 'Не активирован'), defaultValue: 'Не активирован' },
+        role: { type: DataTypes.ENUM('USER', 'WORKER', 'ADMIN'), defaultValue: 'USER' }
+    },
     {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
+        freezeTableName: true
     })
 
-const BasketDevice = sequelize.define('basket_device',
-    {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
-    })
-
-const Device = sequelize.define('device',
+const Person = sequelize.define('persons',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        name: { type: DataTypes.STRING, unique: true, allowNull: false },
-        price: { type: DataTypes.FLOAT, allowNull: false },
-        rating: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 },
-        img: { type: DataTypes.STRING, allowNull: false }
+        name: { type: DataTypes.STRING, allowNull: false },
+        ident_number: { type: DataTypes.STRING, unique: true, allowNull: false },
+        birth: { type: DataTypes.DATEONLY, allowNull: false },
+        sex: { type: DataTypes.STRING, allowNull: false }
+    },
+    {
+        freezeTableName: true
     })
 
-const Type = sequelize.define('type',
+const Card = sequelize.define('cards',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        name: { type: DataTypes.STRING, unique: true, allowNull: false }
+        number: { type: DataTypes.STRING(16), allowNull: false },
+        expire_date: { type: DataTypes.DATEONLY, allowNull: false },
+        cvv: { type: DataTypes.INTEGER, allowNull: false },
+        balance: { type: DataTypes.FLOAT, allowNull: false }
+    },
+    {
+        freezeTableName: true
     })
 
-const Brand = sequelize.define('brand',
+const CardType = sequelize.define('card_types',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        name: { type: DataTypes.STRING, unique: true, allowNull: false }
-    })
-
-const Rating = sequelize.define('rating',
-    {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        rate: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 }
-    })
-
-const DeviceInfo = sequelize.define('device_info',
-    {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        title: { type: DataTypes.STRING, allowNull: false },
         description: { type: DataTypes.TEXT, allowNull: false }
-    })
-
-const TypeBrand = sequelize.define('type_brand',
+    },
     {
-        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
+        freezeTableName: true
     })
 
-User.hasOne(Basket)
-Basket.belongsTo(User)
+const CardRequest = sequelize.define('card_requests',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        date: { type: DataTypes.DATEONLY, allowNull: false },
+        status: { type: DataTypes.ENUM('Обрабатывается', 'Одобрено', 'Отказано'), defaultValue: 'Обрабатывается' }
+    },
+    {
+        freezeTableName: true
+    })
 
-User.hasMany(Rating)
-Rating.belongsTo(User)
+const Loan = sequelize.define('loans',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        date: { type: DataTypes.DATEONLY, allowNull: false },
+        expire_date: { type: DataTypes.DATEONLY, allowNull: false },
+        amount: { type: DataTypes.FLOAT, allowNull: false }
+    },
+    {
+        freezeTableName: true
+    })
 
-Basket.hasMany(BasketDevice)
-BasketDevice.belongsTo(Basket)
+const LoanType = sequelize.define('loan_types',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        name: { type: DataTypes.FLOAT, allowNull: false },
+        annual_interest_rate: { type: DataTypes.FLOAT, allowNull: false },
+        description: { type: DataTypes.FLOAT, allowNull: false }
+    },
+    {
+        freezeTableName: true
+    })
 
-Type.hasMany(Device)
-Device.belongsTo(Type)
+const LoanRequest = sequelize.define('loan_requests',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        date: { type: DataTypes.DATEONLY, allowNull: false },
+        status: { type: DataTypes.ENUM('Обрабатывается', 'Одобрено', 'Отказано'), defaultValue: 'Обрабатывается' }
+    },
+    {
+        freezeTableName: true
+    })
 
-Brand.hasMany(Device)
-Device.belongsTo(Brand)
+const Payment = sequelize.define('payments',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        amount: { type: DataTypes.FLOAT, allowNull: false },
+        date: { type: DataTypes.DATE, allowNull: false },
+        receiver: { type: DataTypes.STRING, allowNull: false },
+        type: { type: DataTypes.ENUM('Зачисление', 'Оплата'), allowNull: false }
+    },
+    {
+        freezeTableName: true
+    })
 
-Device.hasMany(Rating)
-Rating.belongsTo(Device)
+Person.hasOne(Account)
+Account.belongsTo(Person)
 
-Device.hasMany(DeviceInfo, { as: 'info' })
-DeviceInfo.belongsTo(Device)
+Person.hasMany(Card)
+Card.belongsTo(Person)
 
-Device.hasMany(BasketDevice)
-BasketDevice.belongsTo(Device)
+Person.hasMany(CardRequest)
+CardRequest.belongsTo(Person)
 
-Type.belongsToMany(Brand, { through: TypeBrand })
-Brand.belongsToMany(Type, { through: TypeBrand })
+Person.hasOne(Loan)
+Loan.belongsTo(Person)
+
+Person.hasMany(LoanRequest)
+LoanRequest.belongsTo(Person)
+
+Person.hasMany(Payment)
+Payment.belongsTo(Person)
+
+CardType.hasMany(Card)
+Card.belongsTo(CardType)
+
+LoanType.hasMany(Loan)
+Loan.belongsTo(LoanType)
 
 module.exports = {
-    User,
-    Basket,
-    BasketDevice,
-    Device,
-    Type,
-    Brand,
-    Rating,
-    DeviceInfo,
-    TypeBrand
+    Account,
+    Person,
+    Card,
+    CardType,
+    CardRequest,
+    Loan,
+    LoanType,
+    LoanRequest,
+    Payment
 }
