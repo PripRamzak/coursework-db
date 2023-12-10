@@ -17,7 +17,9 @@ const Account = sequelize.define('accounts',
 const Person = sequelize.define('persons',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        name: { type: DataTypes.STRING, allowNull: false },
+        last_name: { type: DataTypes.STRING, allowNull: false },
+        first_name: { type: DataTypes.STRING, allowNull: false },
+        middle_name: { type: DataTypes.STRING, allowNull: false },
         ident_number: { type: DataTypes.STRING, unique: true, allowNull: false },
         birth: { type: DataTypes.DATEONLY, allowNull: false },
         sex: { type: DataTypes.STRING, allowNull: false }
@@ -32,7 +34,7 @@ const Card = sequelize.define('cards',
         number: { type: DataTypes.STRING(16), allowNull: false },
         expire_date: { type: DataTypes.DATEONLY, allowNull: false },
         cvv: { type: DataTypes.INTEGER, allowNull: false },
-        balance: { type: DataTypes.FLOAT, allowNull: false }
+        balance: { type: DataTypes.FLOAT, defaultValue: 0.0 }
     },
     {
         freezeTableName: true
@@ -41,6 +43,7 @@ const Card = sequelize.define('cards',
 const CardType = sequelize.define('card_types',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        name: { type: DataTypes.STRING, allowNull: false },
         description: { type: DataTypes.TEXT, allowNull: false }
     },
     {
@@ -62,7 +65,8 @@ const Loan = sequelize.define('loans',
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         date: { type: DataTypes.DATEONLY, allowNull: false },
         expire_date: { type: DataTypes.DATEONLY, allowNull: false },
-        amount: { type: DataTypes.FLOAT, allowNull: false }
+        amount: { type: DataTypes.FLOAT, allowNull: false },
+        payment: {type: DataTypes.FLOAT, allowNull: false}
     },
     {
         freezeTableName: true
@@ -83,6 +87,8 @@ const LoanRequest = sequelize.define('loan_requests',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         date: { type: DataTypes.DATEONLY, allowNull: false },
+        amount: { type: DataTypes.FLOAT, allowNull: false },
+        years: { type: DataTypes.INTEGER, allowNull: false },
         status: { type: DataTypes.ENUM('Обрабатывается', 'Одобрено', 'Отказано'), defaultValue: 'Обрабатывается' }
     },
     {
@@ -122,8 +128,14 @@ Payment.belongsTo(Person)
 CardType.hasMany(Card)
 Card.belongsTo(CardType)
 
+CardType.hasMany(CardRequest)
+CardRequest.belongsTo(CardType)
+
 LoanType.hasMany(Loan)
 Loan.belongsTo(LoanType)
+
+LoanType.hasMany(LoanRequest)
+LoanRequest.belongsTo(LoanType)
 
 module.exports = {
     Account,

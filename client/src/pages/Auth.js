@@ -3,13 +3,13 @@ import { Button, Card, Container, Form } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LOGIN_ROUTE, REGISTRATION_ROUTE, SHOP_ROUTE } from '../utils/consts';
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE } from '../utils/consts';
 import { login, registration } from '../http/userApi';
 import { Context } from '..';
 import { observer } from 'mobx-react-lite';
 
 const Auth = observer(() => {
-    const { user } = useContext(Context)
+    const { account } = useContext(Context)
     const location = useLocation()
     const navigate = useNavigate()
     const isLogin = location.pathname === LOGIN_ROUTE
@@ -26,16 +26,15 @@ const Auth = observer(() => {
                 data = await registration(email, password);
             }
 
-            user.setUser(user)
-            user.setIsAuth(true)
-            navigate(SHOP_ROUTE)
+            account.setAccount(data)
+            account.setIsAuth(true)
+            navigate(BANK_ROUTE)
         }
         catch (e) {
-            alert(e.response.data.message)
+            alert(e.responce.data.message)
         }
     }
 
-    console.log(location)
     return (
         <Container className="d-flex justify-content-center align-items-center" style={{ height: window.innerHeight - 54 }}>
             <Card style={{ width: 600 }} className="p-5">
