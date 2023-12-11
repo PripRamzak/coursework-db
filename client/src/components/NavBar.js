@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { Context } from '../index';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE } from '../utils/consts';
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE } from '../utils/consts';
 import { observer } from 'mobx-react-lite';
 import { NavLink, useNavigate } from 'react-router-dom';
 
@@ -22,20 +22,21 @@ const NavBar = observer(() => {
     return (
         <Navbar bg="dark" data-bs-theme="dark">
             <Container>
-                <NavLink style={{ color: 'white', textDecoration: 'none', fontSize: 24 }} to={BANK_ROUTE}>СкруджБанк</NavLink>
+                <NavLink style={{ color: 'white', textDecoration: 'none', fontSize: 32 }} to={BANK_ROUTE}>СкруджБанк</NavLink>
+                <NavLink className='ms-5 mt-1' style={{ color: 'lightgray', textDecoration: 'none', fontSize: 24 }} to={CARDS_ROUTE}>Карты</NavLink>
                 {account.isAuth ?
                     <Nav className="ms-auto">
                         {account.role === 'ADMIN' &&
-                            <Button className="me-2" onClick={() => navigate(ADMIN_ROUTE)}>Админ панель</Button>
+                            <Button variant='light' className="me-2" onClick={() => navigate(ADMIN_ROUTE)}>Админ панель</Button>
                         }
                         {account.status == 'Не активирован' &&
-                            <Button className="me-2" onClick={() => navigate(ACTIVATION_ROUTE)}>Активировать аккаунт</Button>
+                            <Button variant='light' className="me-2" onClick={() => navigate(ACTIVATION_ROUTE)}>Активировать аккаунт</Button>
                         }
-                        <Button onClick={() => logOut()}>Выйти</Button>
+                        <Button variant='light' onClick={() => logOut()}>Выйти</Button>
                     </Nav>
                     :
                     <Nav className="ms-auto">
-                        <Button onClick={() => navigate(LOGIN_ROUTE)}>Авторизация</Button>
+                        <Button variant='light' onClick={() => navigate(LOGIN_ROUTE)}>Авторизация</Button>
                     </Nav>
                 }
             </Container>

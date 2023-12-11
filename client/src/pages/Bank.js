@@ -1,12 +1,9 @@
 import React, { useContext, useEffect } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-import TypeBar from '../components/TypeBar';
-import BrandBar from '../components/BrandBar';
-import DeviceList from '../components/DeviceList';
+import { Container, Row, Col, Image, Carousel } from 'react-bootstrap';
 import { observer } from 'mobx-react-lite';
 import { Context } from '..';
-import { fetchBrands, fetchDevices, fetchTypes } from '../http/deviceApi';
-import Pages from '../components/Pages';
+import mcDuck from '../assets/mc-duck.png';
+import cardImage from '../assets/card_prev.png'
 
 const Shop = observer(() => {
     const { device } = useContext(Context)
@@ -30,6 +27,32 @@ const Shop = observer(() => {
 
     return (
         <Container>
+            <Carousel data-bs-theme="dark">
+                <Carousel.Item>
+                    <Row>
+                        <Col xs={12} sm={4} md={4}>
+                            <Image height={500} src={mcDuck} />
+                        </Col>
+                    </Row>
+                    <Carousel.Caption>
+                        <h2>Не копите, а вкладывайте</h2>
+                        <p>СкруджБанк - место, где ваши деньги любят</p>
+                    </Carousel.Caption>
+                </Carousel.Item>
+                <Carousel.Item>
+                    <Row className='d-flex justify-content-center'>
+                        <Col xs={12} sm={4} md={4}>
+                            <Image className='mb-5' width='100%' height={450} src={cardImage} />
+                        </Col>
+                    </Row>
+                    <Carousel.Caption>
+                        <h2>Лучшие банковские карты</h2>
+                        <p>Самый стильный дизайн</p>
+                    </Carousel.Caption>
+                </Carousel.Item>
+            </Carousel>
+
+            {/*
             <Row className="mt-2">
                 <Col md={3}>
                     <TypeBar />
@@ -39,8 +62,8 @@ const Shop = observer(() => {
                     <DeviceList />
                     <Pages />
                 </Col>
-            </Row>
-        </Container>
+    </Row> */}
+        </Container >
     );
 })
 

@@ -1,10 +1,11 @@
 import Admin from './pages/Admin';
 import Basket from './pages/Basket';
 import Auth from './pages/Auth';
-import Shop from './pages/Bank';
+import Bank from './pages/Bank';
 import DevicePage from './pages/DevicePage';
 import Activation from './pages/Activation';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, BASKET_ROUTE, DEVICE_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE } from "./utils/consts";
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, BASKET_ROUTE, DEVICE_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE } from "./utils/consts";
+import Cards from './pages/Cards';
 
 export const authRoutes = [
     {
@@ -24,7 +25,7 @@ export const authRoutes = [
 export const publicRoutes = [
     {
         path: BANK_ROUTE,
-        Component: Shop
+        Component: Bank
     },
     {
         path: LOGIN_ROUTE,
@@ -33,6 +34,10 @@ export const publicRoutes = [
     {
         path: REGISTRATION_ROUTE,
         Component: Auth
+    },
+    {
+        path: CARDS_ROUTE,
+        Component: Cards
     },
     {
         path: DEVICE_ROUTE + '/:id',

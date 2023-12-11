@@ -44,6 +44,7 @@ const CardType = sequelize.define('card_types',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         name: { type: DataTypes.STRING, allowNull: false },
+        img: { type: DataTypes.STRING, allowNull: false },
         description: { type: DataTypes.TEXT, allowNull: false }
     },
     {
@@ -66,7 +67,7 @@ const Loan = sequelize.define('loans',
         date: { type: DataTypes.DATEONLY, allowNull: false },
         expire_date: { type: DataTypes.DATEONLY, allowNull: false },
         amount: { type: DataTypes.FLOAT, allowNull: false },
-        payment: {type: DataTypes.FLOAT, allowNull: false}
+        payment: { type: DataTypes.FLOAT, allowNull: false }
     },
     {
         freezeTableName: true
