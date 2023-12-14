@@ -4,8 +4,9 @@ import Auth from './pages/Auth';
 import Bank from './pages/Bank';
 import DevicePage from './pages/DevicePage';
 import Activation from './pages/Activation';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, BASKET_ROUTE, DEVICE_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE } from "./utils/consts";
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, BASKET_ROUTE, DEVICE_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE } from "./utils/consts";
 import Cards from './pages/Cards';
+import PersonalAccount from './pages/PersonalAccount';
 
 export const authRoutes = [
     {
@@ -19,6 +20,10 @@ export const authRoutes = [
     {
         path: ACTIVATION_ROUTE,
         Component: Activation
+    },
+    {
+        path: PERSONAL_ACCOUNT_ROUTE,
+        Component: PersonalAccount
     }
 ]
 

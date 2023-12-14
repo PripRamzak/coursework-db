@@ -27,7 +27,7 @@ const Shop = observer(() => {
 
     return (
         <Container>
-            <Carousel data-bs-theme="dark">
+            <Carousel width='500' data-bs-theme="dark">
                 <Carousel.Item>
                     <Row>
                         <Col xs={12} sm={4} md={4}>

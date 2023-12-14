@@ -23,6 +23,10 @@ export default class AccountStore {
         return this._account.id
     }
 
+    get personId() {
+        return this._account.personId
+    }
+
     get role() {
         return this._account.role
     }

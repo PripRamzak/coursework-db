@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { Account } = require('../models/models')
 
-const generateJwt = (id, email, role, status) => {
-    return jwt.sign({ id, email, role, status }, process.env.SECRET_KEY, { expiresIn: '24h' })
+const generateJwt = (id, email, role, status, personId) => {
+    return jwt.sign({ id, email, role, status, personId }, process.env.SECRET_KEY, { expiresIn: '24h' })
 }
 
 class AccountController {
@@ -38,7 +38,7 @@ class AccountController {
             return next(ApiError.badRequest('Incorrect email or password'))
         }
 
-        const token = generateJwt(account.id, account.email, account.role, account.status)
+        const token = generateJwt(account.id, account.email, account.role, account.status, account.personId)
         return res.json({ token })
     }
 
@@ -60,7 +60,7 @@ class AccountController {
 
         console.log('second step')
 
-        const token = generateJwt(account.id, account.email, account.role, account.status)
+        const token = generateJwt(account.id, account.email, account.role, account.status, account.personId)
         return res.json({ token })
     }
 
