@@ -12,8 +12,6 @@ class CardRequestController {
         const { cardRequestId, newStatus } = req.body
         const request = await CardRequest.findOne({ where: { id: cardRequestId } })
 
-        console.log(newStatus)
-
         request.status = newStatus
         await request.save()
 

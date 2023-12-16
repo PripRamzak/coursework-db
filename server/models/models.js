@@ -123,8 +123,8 @@ Loan.belongsTo(Person)
 Person.hasMany(LoanRequest)
 LoanRequest.belongsTo(Person)
 
-Person.hasMany(Payment)
-Payment.belongsTo(Person)
+Card.hasMany(Payment)
+Payment.belongsTo(Card)
 
 CardType.hasMany(Card)
 Card.belongsTo(CardType)

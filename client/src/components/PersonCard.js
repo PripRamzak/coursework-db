@@ -6,24 +6,28 @@ import { fetchCards } from '../http/cardApi';
 import { observer } from 'mobx-react-lite';
 import CreateCardRequest from '../components/modals/CreateCardRequest';
 import CardDetails from './modals/CardDetails';
+import CreatePayment from './modals/CreatePayment';
+import CardStatement from './modals/CardStatement';
 
 
 const PersonCard = observer(() => {
     const { account, card } = useContext(Context)
     const [cardRequestVisible, setCardRequestVisible] = useState(false)
     const [cardDetailsVisible, setCardDetailsVisible] = useState(false)
+    const [paymentVisible, setPaymentsVisible] = useState(false)
+    const [cardStatementVisible, setCardStatementVisible] = useState(false)
     const [index, setIndex] = useState(0)
 
     useEffect(() => {
         fetchCards(account.personId).then(data => card.setCards(data))
-    }, [account])
+    }, [account, paymentVisible])
 
     const handleSelect = (selectedIndex) => {
         setIndex(selectedIndex)
     }
 
     const getCardTypeImage = (cardTypeId) => {
-        return card.types.find((type) => type.id == cardTypeId).img
+        return card.types.find((type) => type.id === cardTypeId).img
     }
 
     return (
@@ -49,7 +53,7 @@ const PersonCard = observer(() => {
                                         width='500'
                                         src={process.env.REACT_APP_API_URL + getCardTypeImage(personCard.cardTypeId)} />
                                     <Carousel.Caption className='mb-5 d-flex justify-content-start'>
-                                        <h2>{personCard.balance} BYN</h2>
+                                        <h2 style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>{personCard.balance} BYN</h2>
                                     </Carousel.Caption>
                                 </Carousel.Item>
                             )}
@@ -60,10 +64,15 @@ const PersonCard = observer(() => {
                             <Button variant='outline-dark' onClick={() => setCardDetailsVisible(true)}>
                                 Реквизиты карты
                             </Button>
-                            <Button className='mt-4' variant='outline-dark'>
+                            <CardDetails show={cardDetailsVisible} onHide={() => setCardDetailsVisible(false)} card={card.cards[index]} />
+                            <Button className='mt-4' variant='outline-dark' onClick={() => setPaymentsVisible(true)}>
                                 Совершить платеж
                             </Button>
-                            <CardDetails show={cardDetailsVisible} onHide={() => setCardDetailsVisible(false)} card={card.cards[index]} />
+                            <CreatePayment show={paymentVisible} onHide={() => setPaymentsVisible(false)} cardId={card.cards[index].id} />
+                            <Button className='mt-4' variant='outline-dark' onClick={() => setCardStatementVisible(true)}>
+                                Выписка по карте
+                            </Button>
+                            <CardStatement show={cardStatementVisible} onHide={() => setCardStatementVisible(false)} cardId={card.cards[index].id} />
                         </Row>
                     </Col>
                 </Row>

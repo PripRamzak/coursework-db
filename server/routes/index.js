@@ -6,17 +6,16 @@ const personRouter = require('./personRouter')
 const cardRouter = require('./cardRouter')
 const cardTypeRouter = require('./cardTypeRouter')
 const cardRequestRouter = require('./cardRequestRouter')
+const paymentRouter = require('./paymentRouter')
 const brandRouter = require('./brandRouter')
-const typeRouter = require('./cardTypeRouter')
 
 router.use('/account', accountRouter)
 router.use('/person', personRouter)
 router.use('/card', cardRouter)
 router.use('/card_type', cardTypeRouter)
 router.use('/card_request', cardRequestRouter)
+router.use('/payment', paymentRouter)
 router.use('/device', deviceRouter)
 router.use('/brand', brandRouter)
-router.use('/type', typeRouter)
-
 
 module.exports = router

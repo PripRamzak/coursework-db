@@ -39,15 +39,13 @@ const PersonCardRequest = observer(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            {card.requests.map(request =>
-                                <>
-                                    <td>{getCardTypeName(request.cardTypeId)}</td>
-                                    <td>{request.date}</td>
-                                    <td>{request.status}</td>
-                                </>
-                            )}
-                        </tr>
+                        {card.requests.map(request =>
+                            <tr>
+                                <td>{getCardTypeName(request.cardTypeId)}</td>
+                                <td>{request.date}</td>
+                                <td>{request.status}</td>
+                            </tr>
+                        )}
                     </tbody>
                 </Table>
             }
