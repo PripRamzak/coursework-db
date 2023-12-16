@@ -5,8 +5,19 @@ class CardRequestController {
     async create(req, res) {
         const { personId, typeId } = req.body
         const date = new Date();
-        const card_request = await CardRequest.create({ date, personId, cardTypeId: typeId })
-        return res.json(card_request)
+        const request = await CardRequest.create({ date, personId, cardTypeId: typeId })
+        return res.json(request)
+    }
+    async changeStatus(req, res) {
+        const { cardRequestId, newStatus } = req.body
+        const request = await CardRequest.findOne({ where: { id: cardRequestId } })
+
+        console.log(newStatus)
+
+        request.status = newStatus
+        await request.save()
+
+        return res.json(request)
     }
     async getAll(req, res) {
         const { personId } = req.query

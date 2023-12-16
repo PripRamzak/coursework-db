@@ -45,20 +45,14 @@ class AccountController {
     async activation(req, res, next) {
         const { person_id, account_id } = req.body
 
-        console.log({person_id, account_id})
-
         const account = await Account.findOne({ where: {id: account_id } })
         if (!account) {
             return next(ApiError.badRequest('Unauthorized'))
         }
 
-        console.log('first step')
-
         account.personId = person_id
         account.status = 'Активирован'
         await account.save()
-
-        console.log('second step')
 
         const token = generateJwt(account.id, account.email, account.role, account.status, account.personId)
         return res.json({ token })

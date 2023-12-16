@@ -3,7 +3,8 @@ const router = new Router()
 const cardRequestController = require('../controllers/cardRequestController')
 const checkRole = require('../middleware/checkRoleMiddleware')
 
-router.post('/', cardRequestController.create)
+router.post('/create', cardRequestController.create)
+router.post('/change_status', cardRequestController.changeStatus)
 router.get('/', cardRequestController.getAll)
 
 module.exports = router

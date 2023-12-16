@@ -26,6 +26,8 @@ const Auth = observer(() => {
                 data = await registration(email, password);
             }
 
+            console.log(data)
+
             account.setAccount(data)
             account.setIsAuth(true)
             navigate(BANK_ROUTE)

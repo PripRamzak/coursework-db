@@ -1,5 +1,10 @@
 import { $authHost, $host } from "./index"
 
+export const createCard = async (personId, cardTypeId) => {
+    const { data } = await $authHost.post('api/card', { personId, cardTypeId })
+    return data
+}
+
 export const fetchCards = async (personId) => {
     const { data } = await $authHost.get('api/card', {
         params:
@@ -11,7 +16,12 @@ export const fetchCards = async (personId) => {
 }
 
 export const createCardRequest = async (personId, typeId) => {
-    const { data } = await $authHost.post('api/card_request', { personId, typeId })
+    const { data } = await $authHost.post('api/card_request/create', { personId, typeId })
+    return data
+}
+
+export const changeStatus = async (cardRequestId, newStatus) => {
+    const { data } = await $authHost.post('api/card_request/change_status', { cardRequestId, newStatus })
     return data
 }
 

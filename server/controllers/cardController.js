@@ -9,21 +9,21 @@ function getRandomInt(min, max) {
 
 class CardController {
     async create(req, res, next) {
-        const request_id = req.body
+        const { personId, cardTypeId } = req.body
 
-        let number = {};
+        let number = ''
         for (let i = 0; i < 4; i++) {
             number = number + getRandomInt(1000, 10000).toString()
         }
-        const cvv = getRandomInt(100, 1000);
 
-        const request_date = new Date();
+        const cvv = getRandomInt(100, 1000)
+
+        const request_date = new Date()
         const expire_date = new Date(`${request_date.getFullYear() + 4}-${request_date.getMonth()}`)
 
-        const person = await Card.create({ number, expire_date, cvv })
+        const person = await Card.create({ number, expire_date, cvv, personId, cardTypeId })
         return res.json(person)
     }
-
     async getAll(req, res) {
         const { personId } = req.query
         let cards;
