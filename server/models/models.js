@@ -76,9 +76,14 @@ const Loan = sequelize.define('loans',
 const LoanType = sequelize.define('loan_types',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-        name: { type: DataTypes.FLOAT, allowNull: false },
+        name: { type: DataTypes.STRING, allowNull: false },
+        min_amount: { type: DataTypes.INTEGER, allowNull: false },
+        max_amount: { type: DataTypes.INTEGER, allowNull: false },
+        min_term: { type: DataTypes.INTEGER, allowNull: false },
+        max_term: { type: DataTypes.INTEGER, allowNull: false },
         annual_interest_rate: { type: DataTypes.FLOAT, allowNull: false },
-        description: { type: DataTypes.FLOAT, allowNull: false }
+        img: { type: DataTypes.STRING, allowNull: false },
+        description: { type: DataTypes.TEXT, allowNull: false }
     },
     {
         freezeTableName: true
@@ -100,8 +105,8 @@ const Payment = sequelize.define('payments',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         amount: { type: DataTypes.FLOAT, allowNull: false },
+        code: { type: DataTypes.STRING, allowNull: false },
         date: { type: DataTypes.DATE, allowNull: false },
-        receiver: { type: DataTypes.STRING, allowNull: false },
         type: { type: DataTypes.ENUM('Зачисление', 'Оплата'), allowNull: false }
     },
     {

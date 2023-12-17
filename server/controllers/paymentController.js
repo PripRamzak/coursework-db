@@ -3,10 +3,10 @@ const ApiError = require('../error/apiError')
 
 class PaymentController {
     async create(req, res, next) {
-        const { amount, receiver, type, cardId } = req.body
+        const { amount, code, type, cardId } = req.body
 
-        if (!amount || !receiver) {
-            return next(ApiError.badRequest('Incorrect receiver or amount'))
+        if (!amount || !code) {
+            return next(ApiError.badRequest('Incorrect code or amount'))
         }
 
         const date = new Date
@@ -24,7 +24,7 @@ class PaymentController {
 
         await card.save()
 
-        const payment = await Payment.create({amount, date, receiver, type, cardId})
+        const payment = await Payment.create({amount, date, code, type, cardId})
 
         return res.json(payment)
     }

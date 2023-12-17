@@ -4,12 +4,12 @@ import { createPayment } from '../../http/paymentApi';
 
 function CreatePayment({ show, onHide, cardId }) {
     const [amount, setAmount] = useState(0)
-    const [receiver, setReceiver] = useState('')
+    const [code, setCode] = useState('')
 
     const addPayment = () => {
-        createPayment(amount, receiver, cardId).then(data => {
+        createPayment(amount, code, cardId).then(data => {
             setAmount(0)
-            setReceiver('')
+            setCode('')
             onHide()
         })
     }
@@ -27,7 +27,7 @@ function CreatePayment({ show, onHide, cardId }) {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Control value={receiver} onChange={e => setReceiver(e.target.value)} placeholder={'Получатель платежа'} />
+                    <Form.Control value={code} onChange={e => setCode(e.target.value)} placeholder={'Код платежа'} />
                     <Form.Control
                         value={amount.toString()}
                         onChange={e => setAmount(Number(e.target.value))}

@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { Context } from '../index';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE } from '../utils/consts';
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE } from '../utils/consts';
 import { observer } from 'mobx-react-lite';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
@@ -25,6 +25,7 @@ const NavBar = observer(() => {
             <Container>
                 <NavLink style={{ color: 'white', textDecoration: 'none', fontSize: 32 }} to={BANK_ROUTE}>СкруджБанк</NavLink>
                 <NavLink className='ms-5 mt-1' style={{ color: 'lightgray', textDecoration: 'none', fontSize: 24 }} to={CARDS_ROUTE}>Карты</NavLink>
+                <NavLink className='ms-5 mt-1' style={{ color: 'lightgray', textDecoration: 'none', fontSize: 24 }} to={LOANS_ROUTE}>Кредиты</NavLink>
                 {account.isAuth ?
                     <Nav className="ms-auto">
                         {account.role === 'ADMIN' &&
@@ -40,7 +41,7 @@ const NavBar = observer(() => {
                             <Dropdown.Toggle variant='light'>
                                 Интернет-банкинг
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => navigate(PERSONAL_ACCOUNT_ROUTE)}>Личный кабинет </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => navigate(PERSONAL_ACCOUNT_ROUTE)}>Личный кабинет</Dropdown.Item>
                                     <Dropdown.Item onClick={() => logOut()}>Выйти</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown.Toggle>

@@ -29,8 +29,7 @@ function CreateCardType({ show, onHide }) {
             show={show}
             onHide={onHide}
             size="lg"
-            centered
-        >
+            centered>
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
                     Добавить тип

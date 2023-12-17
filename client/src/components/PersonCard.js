@@ -27,7 +27,9 @@ const PersonCard = observer(() => {
     }
 
     const getCardTypeImage = (cardTypeId) => {
-        return card.types.find((type) => type.id === cardTypeId).img
+        if (card.types.length == 0)
+            return ''
+        return process.env.REACT_APP_API_URL + card.types.find((type) => type.id === cardTypeId).img
     }
 
     return (
@@ -51,7 +53,7 @@ const PersonCard = observer(() => {
                                     <Image className='ms-3'
                                         height='300'
                                         width='500'
-                                        src={process.env.REACT_APP_API_URL + getCardTypeImage(personCard.cardTypeId)} />
+                                        src={getCardTypeImage(personCard.cardTypeId)} />
                                     <Carousel.Caption className='mb-5 d-flex justify-content-start'>
                                         <h2 style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>{personCard.balance} BYN</h2>
                                     </Carousel.Caption>

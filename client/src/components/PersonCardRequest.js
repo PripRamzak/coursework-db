@@ -40,7 +40,7 @@ const PersonCardRequest = observer(() => {
                     </thead>
                     <tbody>
                         {card.requests.map(request =>
-                            <tr>
+                            <tr key={request.id}>
                                 <td>{getCardTypeName(request.cardTypeId)}</td>
                                 <td>{request.date}</td>
                                 <td>{request.status}</td>

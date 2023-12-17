@@ -1,7 +1,7 @@
 import { $authHost, $host } from "./index"
 
-export const createPayment = async (amount, receiver, cardId) => {
-    const { data } = await $authHost.post('api/payment', { amount, receiver, type: 'Оплата', cardId })
+export const createPayment = async (amount, code, cardId) => {
+    const { data } = await $authHost.post('api/payment', { amount, code, type: 'Оплата', cardId })
     return data
 }
 

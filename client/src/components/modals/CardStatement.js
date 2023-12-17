@@ -7,7 +7,7 @@ function CardStatement({ show, onHide, cardId }) {
 
     useEffect(() => {
         fetchPayments(cardId).then(data => setPayments(data))
-    }, [])
+    }, [show])
 
     return (
         <Modal
@@ -25,18 +25,18 @@ function CardStatement({ show, onHide, cardId }) {
                     <thead>
                         <tr>
                             <th>Сумма</th>
+                            <th>Код платежа</th>
                             <th>Тип</th>
                             <th>Дата платежа</th>
-                            <th>Получатель</th>
                         </tr>
                     </thead>
                     <tbody>
                         {payments.map(payment =>
                             <tr>
                                 <td>{payment.amount}</td>
+                                <td>{payment.code}</td>
                                 <td>{payment.type}</td>
                                 <td>{payment.date}</td>
-                                <td>{payment.receiver}</td>
                             </tr>
                         )}
                     </tbody>
