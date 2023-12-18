@@ -32,7 +32,7 @@ function CardStatement({ show, onHide, cardId }) {
                     </thead>
                     <tbody>
                         {payments.map(payment =>
-                            <tr>
+                            <tr key={payment.id}>
                                 <td>{payment.amount}</td>
                                 <td>{payment.code}</td>
                                 <td>{payment.type}</td>

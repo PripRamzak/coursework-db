@@ -95,6 +95,7 @@ const LoanRequest = sequelize.define('loan_requests',
         date: { type: DataTypes.DATEONLY, allowNull: false },
         amount: { type: DataTypes.FLOAT, allowNull: false },
         years: { type: DataTypes.INTEGER, allowNull: false },
+        file_document: {type: DataTypes.STRING, allowNull: false},
         status: { type: DataTypes.ENUM('Обрабатывается', 'Одобрено', 'Отказано'), defaultValue: 'Обрабатывается' }
     },
     {
