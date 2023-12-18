@@ -1,5 +1,6 @@
 const { CardRequest } = require('../models/models')
-const apiError = require('../error/apiError')
+const apiError = require('../error/apiError');
+const { QueryTypes } = require('sequelize');
 
 class CardRequestController {
     async create(req, res) {
@@ -31,6 +32,14 @@ class CardRequestController {
         }
 
         return res.json(requests)
+    }
+    async deleteOne(req, res) {
+        const { id } = req.params
+
+        const request = await CardRequest.findOne({ where: { id } })
+        await request.destroy()
+
+        return res.json({message: 'Successfuly deleted'})
     }
 }
 

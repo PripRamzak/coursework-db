@@ -5,5 +5,6 @@ const loanRequestController = require('../controllers/loanRequestController')
 router.post('/create', loanRequestController.create)
 router.post('/change_status', loanRequestController.changeStatus)
 router.get('/', loanRequestController.getAll)
+router.delete('/:id', loanRequestController.deleteOne)
 
 module.exports = router

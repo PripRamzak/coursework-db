@@ -35,6 +35,11 @@ export const fetchCardRequests = async (personId) => {
     return data
 }
 
+export const deleteCardRequest = async (id) => {
+    const { data } = await $authHost.delete('api/card_request/' + id)
+    return data
+}
+
 export const createCardType = async (type) => {
     const { data } = await $authHost.post('api/card_type', type)
     return data

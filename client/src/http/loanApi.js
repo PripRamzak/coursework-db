@@ -36,6 +36,11 @@ export const fetchLoanRequests = async (personId) => {
     return data
 }
 
+export const deleteLoanRequest = async (id) => {
+    const { data } = await $authHost.delete('api/loan_request/' + id)
+    return data
+}
+
 export const createLoanType = async (type) => {
     const { data } = await $authHost.post('api/loan_type', type)
     return data

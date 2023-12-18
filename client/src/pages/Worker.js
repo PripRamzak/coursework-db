@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container, Table } from 'react-bootstrap';
 import { fetchPersons } from '../http/userApi';
-import { changeCardRequestStatus, createCard, fetchCardRequests, fetchCardTypes } from '../http/cardApi';
-import { changeLoanRequestStatus, createLoan, fetchLoanRequests, fetchLoanTypes } from '../http/loanApi';
+import { changeCardRequestStatus, createCard, deleteCardRequest, fetchCardRequests, fetchCardTypes } from '../http/cardApi';
+import { changeLoanRequestStatus, createLoan, deleteLoanRequest, fetchLoanRequests, fetchLoanTypes } from '../http/loanApi';
 
 function Worker() {
     const [persons, setPersons] = useState([])
@@ -62,7 +62,11 @@ function Worker() {
     const declineCardRequest = async (requestId) => {
         await changeCardRequestStatus(requestId, 'Отказано')
         fetchCardRequests().then(data => setCardRequests(data))
+    }
 
+    const destroyCardRequest = async (requestId) => {
+        await deleteCardRequest(requestId)
+        fetchCardRequests().then(data => setCardRequests(data))
     }
 
     const acceptLoanRequest = async (requestId) => {
@@ -74,6 +78,11 @@ function Worker() {
     const declineLoanRequest = async (requestId) => {
         await changeLoanRequestStatus(requestId, 'Отказано')
         fetchLoanRequests().then(data => setLoanRequests(data))
+    }
+
+    const destroyLoanRequest = async (requestId) => {
+        await deleteLoanRequest(requestId)
+        fetchLoanRequests().then(data => setCardRequests(data))
     }
 
     return (
@@ -102,7 +111,7 @@ function Worker() {
                             <td>{request.status}</td>
                             {request.status === 'Обрабатывается' ?
                                 <td width='250'>
-                                    <Button variant='outline-danger' onClick={() => declineCardRequest(request.Id)}>Отклонить</Button>
+                                    <Button variant='outline-danger' onClick={() => declineCardRequest(request.id)}>Отклонить</Button>
                                     <Button className='ms-3'
                                         variant='outline-success'
                                         onClick={() => acceptCardRequest(request.id, request.personId, request.cardTypeId)}>
@@ -111,7 +120,7 @@ function Worker() {
                                 </td>
                                 :
                                 <td>
-                                    <Button variant='outline-danger'>Удалить</Button>
+                                    <Button variant='outline-danger' onClick={() => destroyCardRequest(request.id)}>Удалить</Button>
                                 </td>
                             }
                         </tr>
@@ -159,7 +168,7 @@ function Worker() {
                                 </td>
                                 :
                                 <td>
-                                    <Button variant='outline-danger'>Удалить</Button>
+                                    <Button variant='outline-danger' onClick={() => destroyLoanRequest(request.id)}>Удалить</Button>
                                 </td>
                             }
                         </tr>

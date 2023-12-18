@@ -44,6 +44,14 @@ class LoanRequestController {
 
         return res.json(requests)
     }
+    async deleteOne(req, res) {
+        const { id } = req.params
+
+        const request = await LoanRequest.findOne({ where: { id } })
+        await request.destroy()
+
+        return res.json({message: 'Successfuly deleted'})
+    }
 }
 
 module.exports = new LoanRequestController()
