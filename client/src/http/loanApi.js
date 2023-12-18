@@ -1,5 +1,10 @@
 import { $authHost, $host } from "./index"
 
+export const createLoan = async (requestId) => {
+    const { data } = await $authHost.post('api/loan', { requestId })
+    return data
+}
+
 export const fetchLoans = async (personId) => {
     const { data } = await $authHost.get('api/loan',
         {
@@ -12,7 +17,22 @@ export const fetchLoans = async (personId) => {
 }
 
 export const createLoanRequest = async (request) => {
-    const { data } = await $authHost.post('api/loan_request', request)
+    const { data } = await $authHost.post('api/loan_request/create', request)
+    return data
+}
+
+export const changeLoanRequestStatus = async (loanRequestId, newStatus) => {
+    const { data } = await $authHost.post('api/loan_request/change_status', { loanRequestId, newStatus })
+    return data
+}
+
+export const fetchLoanRequests = async (personId) => {
+    const { data } = await $authHost.get('api/loan_request', {
+        params:
+        {
+            personId
+        }
+    })
     return data
 }
 

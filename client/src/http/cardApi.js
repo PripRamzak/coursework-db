@@ -20,7 +20,7 @@ export const createCardRequest = async (personId, typeId) => {
     return data
 }
 
-export const changeStatus = async (cardRequestId, newStatus) => {
+export const changeCardRequestStatus = async (cardRequestId, newStatus) => {
     const { data } = await $authHost.post('api/card_request/change_status', { cardRequestId, newStatus })
     return data
 }

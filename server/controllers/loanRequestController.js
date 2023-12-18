@@ -21,8 +21,8 @@ class LoanRequestController {
         return res.json(request)
     }
     async changeStatus(req, res) {
-        const { cardRequestId, newStatus } = req.body
-        const request = await LoanRequest.findOne({ where: { id: cardRequestId } })
+        const { loanRequestId, newStatus } = req.body
+        const request = await LoanRequest.findOne({ where: { id: loanRequestId } })
 
         request.status = newStatus
         await request.save()

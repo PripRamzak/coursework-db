@@ -1,18 +1,27 @@
-const { Loan } = require('../models/models')
+const { Loan, LoanRequest, LoanType } = require('../models/models')
 const apiError = require('../error/apiError')
 
-class CardController {
+class loanController {
     async create(req, res, next) {
-        const { amount, years } = req.body
-        if (!amount || !years) {
-            next(apiError.badRequest('Incorrect amount or years'))
+        const { requestId } = req.body
+
+        if (!requestId) {
+            next(apiError.badRequest('Incorrect request ID'))
         }
 
-        const date = new Date()
-        const expire_date = new Date(`${request_date.getFullYear() + years}-${request_date.getMonth()}`)
+        const request = await LoanRequest.findOne({ where: { id: requestId } })
+        const type = await LoanType.findOne({ where: { id: request.loanTypeId } })
 
-        const person = await Loan.create({ date, expire_date, amount })
-        return res.json(person)
+        const payment = Number(request.amount *
+            (type.annual_interest_rate / (100 * 12) / (1 - Math.pow((1 + type.annual_interest_rate / (100 * 12)), -1 * request.years * 12)))).toFixed(2)
+
+        const amount = Number(payment * 12 * request.years).toFixed(2)
+
+        const date = new Date()
+        const expire_date = new Date(`${date.getFullYear() + request.years}-${date.getMonth() + 1}-${date.getDate()}`)
+
+        const loan = await Loan.create({ date, expire_date, amount, payment, personId: request.personId, loanTypeId: request.loanTypeId })
+        return res.json(loan)
     }
 
     async getAll(req, res) {
@@ -37,4 +46,4 @@ class CardController {
     }
 }
 
-module.exports = new CardController()
+module.exports = new loanController()

@@ -8,8 +8,8 @@ function PersonalAccount() {
     return (
         <Container>
             <PersonCard />
-            <PersonCardRequest />
             <PersonLoan />
+            <PersonCardRequest />
         </Container >
     );
 }
