@@ -1,5 +1,5 @@
-const { Loan, LoanRequest, LoanType } = require('../models/models')
-const apiError = require('../error/apiError')
+const { Loan, LoanRequest, LoanType, Card } = require('../models/models')
+const ApiError = require('../error/apiError')
 
 class loanController {
     async create(req, res, next) {
@@ -21,6 +21,22 @@ class loanController {
         const expire_date = new Date(`${date.getFullYear() + request.years}-${date.getMonth() + 1}-${date.getDate()}`)
 
         const loan = await Loan.create({ date, expire_date, amount, payment, personId: request.personId, loanTypeId: request.loanTypeId })
+        return res.json(loan)
+    }
+
+    async pay(req, res, next) {
+        const { loanId } = req.body
+
+        const loan = await Loan.findOne({ where: { id: loanId } })
+
+        if (!loan) {
+            return next(ApiError.badRequest('Incorrect input data'))
+        }
+
+        loan.amount -= loan.payment
+        loan.amount = Number(loan.payment).toFixed(2)
+        await loan.save()
+
         return res.json(loan)
     }
 

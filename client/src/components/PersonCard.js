@@ -8,6 +8,8 @@ import CreateCardRequest from '../components/modals/CreateCardRequest';
 import CardDetails from './modals/CardDetails';
 import CreatePayment from './modals/CreatePayment';
 import CardStatement from './modals/CardStatement';
+import { fetchLoans, payLoan } from '../http/loanApi';
+import { createPayment } from '../http/paymentApi';
 
 
 const PersonCard = observer(() => {
@@ -15,12 +17,17 @@ const PersonCard = observer(() => {
     const [cardRequestVisible, setCardRequestVisible] = useState(false)
     const [cardDetailsVisible, setCardDetailsVisible] = useState(false)
     const [paymentVisible, setPaymentsVisible] = useState(false)
+    const [loans, setLoans] = useState([])
     const [cardStatementVisible, setCardStatementVisible] = useState(false)
     const [index, setIndex] = useState(0)
 
     useEffect(() => {
         fetchCards(account.personId).then(data => card.setCards(data))
     }, [account, paymentVisible])
+
+    useEffect(() => {
+        fetchLoans(account.personId).then(data => setLoans(data))
+    }, [account])
 
     const handleSelect = (selectedIndex) => {
         setIndex(selectedIndex)
@@ -30,6 +37,12 @@ const PersonCard = observer(() => {
         if (card.types.length == 0)
             return ''
         return process.env.REACT_APP_API_URL + card.types.find((type) => type.id === cardTypeId).img
+    }
+
+    const payLoanPayment = async (loan, cardId) => {
+        await createPayment(loan.payment, '5129', cardId)
+        await payLoan(loan.id)
+        fetchCards(account.personId).then(data => card.setCards(data))
     }
 
     return (
@@ -75,6 +88,7 @@ const PersonCard = observer(() => {
                                 Выписка по карте
                             </Button>
                             <CardStatement show={cardStatementVisible} onHide={() => setCardStatementVisible(false)} cardId={card.cards[index].id} />
+                            <Button className='mt-4' variant='outline-dark' onClick={() => payLoanPayment(loans[0], card.cards[index].id)}>Погасить кредит</Button>
                         </Row>
                     </Col>
                 </Row>

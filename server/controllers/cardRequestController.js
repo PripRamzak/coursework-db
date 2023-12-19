@@ -1,6 +1,5 @@
 const { CardRequest } = require('../models/models')
 const apiError = require('../error/apiError');
-const { QueryTypes } = require('sequelize');
 
 class CardRequestController {
     async create(req, res) {

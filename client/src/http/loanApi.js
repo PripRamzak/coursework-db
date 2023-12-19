@@ -1,7 +1,12 @@
 import { $authHost, $host } from "./index"
 
 export const createLoan = async (requestId) => {
-    const { data } = await $authHost.post('api/loan', { requestId })
+    const { data } = await $authHost.post('api/loan/create', { requestId })
+    return data
+}
+
+export const payLoan = async (loanId) => {
+    const { data } = await $authHost.post('api/loan/pay', { loanId })
     return data
 }
 

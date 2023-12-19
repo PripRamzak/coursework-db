@@ -6,7 +6,7 @@ import { fetchLoanTypes, fetchLoans } from '../http/loanApi';
 import CreateLoanRequest from './modals/CreateLoanRequest';
 
 const PersonLoan = observer(() => {
-    const { account } = useContext(Context)
+    const { account, card } = useContext(Context)
     const [loans, setLoans] = useState([])
     const [loanTypes, setLoanTypes] = useState([])
     const [loanRequestVisible, setLoanRequestVisible] = useState(false)
@@ -14,7 +14,7 @@ const PersonLoan = observer(() => {
     useEffect(() => {
         fetchLoans(account.personId).then(data => setLoans(data))
         fetchLoanTypes().then(data => setLoanTypes(data))
-    }, [account])
+    }, [account, card.cards])
 
     const getLoanTypeName = (loanTypeId) => {
         if (loanTypes.length === 0)
@@ -49,13 +49,12 @@ const PersonLoan = observer(() => {
                                 <tr key={loan.id}>
                                     <td>{getLoanTypeName(loan.loanTypeId)}</td>
                                     <td>{loan.date}</td>
-                                    <td>{loan.amount}</td>
+                                    <td>{Number(loan.amount).toFixed(2)}</td>
                                     <td>{loan.payment}</td>
                                 </tr>
                             )}
                         </tbody>
                     </Table>
-                    <Button className='mt-1' variant='outline-dark'>Погасить кредит</Button>
                 </>
             }
         </React.Fragment>

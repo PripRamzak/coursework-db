@@ -16,11 +16,13 @@ class PaymentController {
             if (amount > card.balance) {
                 return next(ApiError.badRequest('Not enough money'))
             }
-            card.balance -= amount
+            card.balance -= Number(amount).toFixed(2)
         }
         else {
-            card.balance += amount
+            card.balance += Number(amount).toFixed(2)
         }
+
+        card.balance = Number(card.balance).toFixed(2)
 
         await card.save()
 
