@@ -4,14 +4,17 @@ import { Context } from '..';
 import { fetchCardTypes, fetchCards } from '../http/cardApi';
 import { observer } from 'mobx-react-lite';
 import { fetchPersons } from '../http/userApi';
+import { fetchPayments } from '../http/paymentApi';
 
 const WorkerCards = observer(() => {
     const { card } = useContext(Context)
     const [persons, setPersons] = useState([])
+    const [payments, setPayments] = useState([])
     const [selectedType, setSelectedType] = useState({})
 
     useEffect(() => {
         fetchPersons().then(data => setPersons(data))
+        fetchPayments().then(data => setPayments(data))
         fetchCardTypes().then(data => card.setTypes(data))
     }, [])
 
@@ -43,6 +46,28 @@ const WorkerCards = observer(() => {
         return card.types.find((type) => type.id == cardTypeId).name
     }
 
+    const getAmountOfCharges = (cardId) => {
+        let amount = 0
+        for (let i = 0; i < payments.length; i++) {
+            if (payments[i].cardId == cardId && payments[i].type == 'Зачисление') {
+                amount += payments[i].amount
+            }
+        }
+
+        return amount
+    }
+
+    const getAmountOfPayments = (cardId) => {
+        let amount = 0
+        for (let i = 0; i < payments.length; i++) {
+            if (payments[i].cardId == cardId && payments[i].type == 'Оплата') {
+                amount += payments[i].amount
+            }
+        }
+
+        return amount
+    }
+
     return (
         <Container>
             <Row className="mt-3 d-flex">
@@ -66,6 +91,8 @@ const WorkerCards = observer(() => {
                         <th>Отчество клиента</th>
                         <th>Карта</th>
                         <th>Номер карты</th>
+                        <th>Сумма зачислений</th>
+                        <th>Сумма платежей</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,6 +103,8 @@ const WorkerCards = observer(() => {
                             <td>{getPersonMiddleName(card.personId)}</td>
                             <td>{getCardTypeName(card.cardTypeId)}</td>
                             <td>{card.number}</td>
+                            <td>{getAmountOfCharges(card.id)}</td>
+                            <td>{getAmountOfPayments(card.id)}</td>
                         </tr>
                     )}
                 </tbody>

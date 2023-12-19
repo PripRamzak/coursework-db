@@ -30,7 +30,7 @@ const PersonLoan = observer(() => {
             {loans.length === 0 ?
                 <div className='mt-2'>
                     <h3 style={{ color: 'gray' }}>У вас нет кредитов</h3>
-                    <Button className='mt-3 ms-5 d-flex' variant='outline-dark' onClick={() => setLoanRequestVisible(true)}>Оформить</Button>
+                    <Button className='mt-3 d-flex' variant='outline-dark' onClick={() => setLoanRequestVisible(true)}>Оформить</Button>
                     <CreateLoanRequest show={loanRequestVisible} onHide={() => setLoanRequestVisible(false)} personId={account.personId} />
                 </div>
                 :

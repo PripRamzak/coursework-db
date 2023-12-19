@@ -61,8 +61,8 @@ const PersonCard = observer(() => {
             {card.cards.length === 0 ?
                 <div className='mt-2'>
                     <h3 style={{ color: 'gray' }}>У вас нет карт</h3>
-                    <Image className='mt-2' width={300} height={300} src={noCard} />
-                    <Button className='mt-3 ms-5 d-flex' variant='outline-dark' onClick={() => setCardRequestVisible(true)}>Оформить</Button>
+                    <Image className='mt-2' width={200} height={200} src={noCard} />
+                    <Button className='mt-3 d-flex' variant='outline-dark' onClick={() => setCardRequestVisible(true)}>Оформить</Button>
                     <CreateCardRequest show={cardRequestVisible} onHide={() => setCardRequestVisible(false)} personId={account.personId} />
                 </div>
                 :
