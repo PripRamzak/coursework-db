@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { Context } from '../index';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE } from '../utils/consts';
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE } from '../utils/consts';
 import { observer } from 'mobx-react-lite';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
@@ -32,7 +32,16 @@ const NavBar = observer(() => {
                             <Button variant='light' className="me-2" onClick={() => navigate(ADMIN_ROUTE)}>Админ панель</Button>
                         }
                         {account.role === 'WORKER' &&
-                            <Button variant='light' className="me-2" onClick={() => navigate(WORKER_ROUTE)}>Панель сотрудника</Button>
+                            <Dropdown>
+                                <Dropdown.Toggle className='me-2' variant='light'>
+                                    Панель сотрудника
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={() => navigate(WORKER_ROUTE + REQUESTS_ROUTE)}>Заявки</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => navigate(WORKER_ROUTE + CARDS_ROUTE)}>Карты</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => navigate(WORKER_ROUTE + LOANS_ROUTE)}>Кредиты</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown.Toggle>
+                            </Dropdown>
                         }
                         {account.status == 'Не активирован' &&
                             <Button variant='light' className="me-2" onClick={() => navigate(ACTIVATION_ROUTE)}>Активировать аккаунт</Button>

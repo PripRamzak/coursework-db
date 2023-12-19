@@ -41,14 +41,20 @@ class loanController {
     }
 
     async getAll(req, res) {
-        const { personId } = req.query
+        const { personId, typeId } = req.query
         let loans
 
-        if (!personId) {
+        if (!personId && !typeId) {
             loans = await Loan.findAll()
         }
-        else {
+        else if (!personId) {
+            loans = await Loan.findAll({ where: { loanTypeId: typeId } })
+        }
+        else if (!typeId) {
             loans = await Loan.findAll({ where: { personId } })
+        }
+        else {
+            loans = await Loan.findAll({ where: { loanTypeId: typeId, personId } })
         }
 
         return res.json(loans)

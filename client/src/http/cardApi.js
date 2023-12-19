@@ -5,11 +5,12 @@ export const createCard = async (personId, cardTypeId) => {
     return data
 }
 
-export const fetchCards = async (personId) => {
+export const fetchCards = async (personId, typeId) => {
     const { data } = await $authHost.get('api/card', {
         params:
         {
-            personId
+            personId,
+            typeId
         }
     })
     return data

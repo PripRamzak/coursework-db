@@ -4,9 +4,11 @@ import Bank from './pages/Bank';
 import Activation from './pages/Activation';
 import Cards from './pages/Cards';
 import PersonalAccount from './pages/PersonalAccount';
-import Worker from './pages/Worker';
 import Loans from './pages/Loans';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE } from "./utils/consts";
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE } from "./utils/consts";
+import WorkerCards from './pages/WorkerCards';
+import WorkerLoans from './pages/WorkerLoans';
+import WorkerRequests from './pages/WorkerRequests';
 
 export const authRoutes = [
     {
@@ -22,8 +24,16 @@ export const authRoutes = [
         Component: PersonalAccount
     },
     {
-        path: WORKER_ROUTE,
-        Component: Worker
+        path: WORKER_ROUTE + REQUESTS_ROUTE,
+        Component: WorkerRequests
+    },
+    {
+        path: WORKER_ROUTE + CARDS_ROUTE,
+        Component: WorkerCards
+    },
+    {
+        path: WORKER_ROUTE + LOANS_ROUTE,
+        Component: WorkerLoans
     }
 ]
 

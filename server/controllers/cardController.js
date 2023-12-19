@@ -25,14 +25,20 @@ class CardController {
         return res.json(person)
     }
     async getAll(req, res) {
-        const { personId } = req.query
+        const { personId, typeId } = req.query
         let cards;
 
-        if (!personId) {
+        if (!personId && !typeId) {
             cards = await Card.findAll()
         }
-        else {
+        else if (!personId) {
+            cards = await Card.findAll({ where: { cardTypeId: typeId } })
+        }
+        else if (!typeId) {
             cards = await Card.findAll({ where: { personId } })
+        }
+        else {
+            cards = await Card.findAll({ where: { cardTypeId: typeId, personId } })
         }
 
         return res.json(cards)

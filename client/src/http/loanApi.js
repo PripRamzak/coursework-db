@@ -10,12 +10,13 @@ export const payLoan = async (loanId) => {
     return data
 }
 
-export const fetchLoans = async (personId) => {
+export const fetchLoans = async (personId, typeId) => {
     const { data } = await $authHost.get('api/loan',
         {
             params:
             {
-                personId
+                personId,
+                typeId
             }
         })
     return data

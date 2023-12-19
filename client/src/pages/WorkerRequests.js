@@ -4,7 +4,7 @@ import { fetchPersons } from '../http/userApi';
 import { changeCardRequestStatus, createCard, deleteCardRequest, fetchCardRequests, fetchCardTypes } from '../http/cardApi';
 import { changeLoanRequestStatus, createLoan, deleteLoanRequest, fetchLoanRequests, fetchLoanTypes } from '../http/loanApi';
 
-function Worker() {
+function WorkerRequests() {
     const [persons, setPersons] = useState([])
     const [cardTypes, setCardTypes] = useState([])
     const [cardRequests, setCardRequests] = useState([])
@@ -179,4 +179,4 @@ function Worker() {
     );
 }
 
-export default Worker;
+export default WorkerRequests;
