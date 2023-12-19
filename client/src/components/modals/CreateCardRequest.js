@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Dropdown, Modal } from 'react-bootstrap';
+import { Alert, Button, Dropdown, Modal } from 'react-bootstrap';
 import { createCardRequest, fetchCardRequests, fetchCardTypes } from '../../http/cardApi';
 import { Context } from '../..';
 
@@ -7,12 +7,18 @@ function CreateCardRequest({ show, onHide, personId }) {
     const { card } = useContext(Context)
     const [typeId, setTypeId] = useState(0)
     const [type, setType] = useState('')
+    const [alert, setAlert] = useState(false)
 
     useEffect(() => {
         fetchCardTypes().then(data => card.setTypes(data))
     }, [])
 
     const addCardRequest = () => {
+        if (typeId == 0) {
+            setAlert(true)
+            return
+        }
+
         createCardRequest(personId, typeId).then(data => {
             setTypeId('')
             onHide()
@@ -24,8 +30,7 @@ function CreateCardRequest({ show, onHide, personId }) {
             show={show}
             onHide={onHide}
             size="sm"
-            centered
-        >
+            centered>
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
                     Оставьте заявку на карту
@@ -42,6 +47,9 @@ function CreateCardRequest({ show, onHide, personId }) {
                             }}>{type.name}</Dropdown.Item>)}
                     </Dropdown.Menu>
                 </Dropdown>
+                {alert &&
+                    <Alert className='mt-3 p-1 text-center' variant='danger'>Вы не заполнили все поля</Alert>
+                }
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>

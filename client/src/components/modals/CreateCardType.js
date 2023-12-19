@@ -1,23 +1,35 @@
 import React, { useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { createCardType } from '../../http/cardApi';
 
 function CreateCardType({ show, onHide }) {
     const [name, setName] = useState('')
     const [file, setFile] = useState(null)
     const [text, setText] = useState('')
+    const [alert, setAlert] = useState(false)
 
-    const addType = () => {
+    const addType = async () => {
+        if (!file) {
+            setAlert(true)
+            return
+        }
+
         const formData = new FormData()
-        formData.append('name', name)
-        formData.append('img', file)
-        formData.append('description', text)
-        createCardType(formData).then(data => {
-            setName('')
-            setFile(null)
-            setText('')
-            onHide()
-        })
+            formData.append('name', name)
+            formData.append('img', file)
+            formData.append('description', text)
+
+        try {
+            await createCardType(formData).then(data => {
+                setName('')
+                setFile(null)
+                setText('')
+                onHide()
+            })
+        }
+        catch (e) {
+            setAlert(true)
+        }
     }
 
     const selectFile = e => {
@@ -41,6 +53,9 @@ function CreateCardType({ show, onHide }) {
                     <Form.Control className='mt-3' placeholder='Изображение карты' type='file' onChange={selectFile} />
                     <Form.Control className='mt-3' as='textarea' rows={4} value={text} onChange={e => setText(e.target.value)} placeholder={'Описание карты'} />
                 </Form>
+                {alert &&
+                    <Alert className='mt-3 p-1 text-center' variant='danger'>Вы не заполнили все поля</Alert>
+                }
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline" onClick={onHide}>Закрыть</Button>

@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, Card, Container, Form } from 'react-bootstrap';
+import { Alert, Button, Card, Container, Form } from 'react-bootstrap';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ const Auth = observer(() => {
     const isLogin = location.pathname === LOGIN_ROUTE
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [alert, setAlert] = useState(false)
 
     const click = async () => {
         try {
@@ -33,7 +34,7 @@ const Auth = observer(() => {
             navigate(BANK_ROUTE)
         }
         catch (e) {
-            alert(e.responce.data.message)
+            setAlert(true)
         }
     }
 
@@ -46,7 +47,7 @@ const Auth = observer(() => {
                     <Form.Control className="mt-3" placeholder="Пароль" value={password} onChange={p => setPassword(p.target.value)} type='password' />
                     <Row className="mt-3">
                         {isLogin ?
-                            <Col className='mt-2 ms-1'>Нет аккаунта? <NavLink to={REGISTRATION_ROUTE}>Зарегистрируйтесь</NavLink></Col>
+                            <Col className='mt-2 ms-1'>Нет аккаунта? <NavLink to={REGISTRATION_ROUTE} onClick={() => setAlert(false)}>Зарегистрируйтесь</NavLink></Col>
                             :
                             <Col className='mt-2 ms-1'>Есть аккаунт? <NavLink to={LOGIN_ROUTE}>Войдите</NavLink></Col>
                         }
@@ -57,6 +58,9 @@ const Auth = observer(() => {
                         </Col>
                     </Row>
                 </Form>
+                {alert &&
+                    <Alert className='mt-3 p-1 text-center' variant='danger'>Неправильная почта или пароль</Alert>
+                }
             </Card>
         </Container>
     );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, Modal } from 'react-bootstrap';
 import { createLoanType } from '../../http/loanApi';
 
 function CreateLoanType({ show, onHide }) {
@@ -11,8 +11,14 @@ function CreateLoanType({ show, onHide }) {
     const [annualInterestRate, setAnnualInterestRate] = useState(0)
     const [file, setFile] = useState(null)
     const [text, setText] = useState('')
+    const [alert, setAlert] = useState(false)
 
-    const addType = () => {
+    const addType = async () => {
+        if (!file) {
+            setAlert(true)
+            return
+        }
+
         const formData = new FormData()
         formData.append('name', name)
         formData.append('annual_interest_rate', annualInterestRate)
@@ -22,17 +28,23 @@ function CreateLoanType({ show, onHide }) {
         formData.append('max_term', maxTerm)
         formData.append('img', file)
         formData.append('description', text)
-        createLoanType(formData).then(data => {
-            setName('')
-            setAnnualInterestRate(0)
-            setMinAmount(0)
-            setMaxAmount(0)
-            setMinTerm(0)
-            setMaxTerm(0)
-            setFile(null)
-            setText('')
-            onHide()
-        })
+
+        try {
+            await createLoanType(formData).then(data => {
+                setName('')
+                setAnnualInterestRate(0)
+                setMinAmount(0)
+                setMaxAmount(0)
+                setMinTerm(0)
+                setMaxTerm(0)
+                setFile(null)
+                setText('')
+                onHide()
+            })
+        }
+        catch (e) {
+            setAlert(true)
+        }
     }
 
     const selectFile = e => {
@@ -81,6 +93,9 @@ function CreateLoanType({ show, onHide }) {
                     </Form.Group>
                     <Form.Control className='mt-3' as='textarea' rows={4} value={text} onChange={e => setText(e.target.value)} placeholder={'Описание кредита'} />
                 </Form>
+                {alert &&
+                    <Alert className='mt-3 p-1 text-center' variant='danger'>Вы не заполнили все поля</Alert>
+                }
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>

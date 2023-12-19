@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, } from 'react';
-import { Button, Carousel, Col, Image, Row } from 'react-bootstrap';
+import { Button, Carousel, Col, Image, Modal, Row } from 'react-bootstrap';
 import noCard from '../assets/no_card.png';
 import { Context } from '..';
 import { fetchCards } from '../http/cardApi';
@@ -20,6 +20,7 @@ const PersonCard = observer(() => {
     const [loans, setLoans] = useState([])
     const [cardStatementVisible, setCardStatementVisible] = useState(false)
     const [index, setIndex] = useState(0)
+    const [alert, setAlert] = useState(0)
 
     useEffect(() => {
         fetchCards(account.personId).then(data => card.setCards(data))
@@ -40,7 +41,14 @@ const PersonCard = observer(() => {
     }
 
     const payLoanPayment = async (loan, cardId) => {
-        await createPayment(loan.payment, '5129', cardId)
+        try {
+            await createPayment(loan.payment, '5129', cardId)
+        }
+        catch (e) {
+            setAlert(true)
+            return
+        }
+
         await payLoan(loan.id)
         fetchCards(account.personId).then(data => card.setCards(data))
     }
@@ -89,6 +97,22 @@ const PersonCard = observer(() => {
                             </Button>
                             <CardStatement show={cardStatementVisible} onHide={() => setCardStatementVisible(false)} cardId={card.cards[index].id} />
                             <Button className='mt-4' variant='outline-dark' onClick={() => payLoanPayment(loans[0], card.cards[index].id)}>Погасить кредит</Button>
+                            <Modal
+                                show={alert}
+                                size="sm"
+                                centered>
+                                <Modal.Header>
+                                    <Modal.Title id="contained-modal-title-vcenter">
+                                        Недостаточно средств
+                                    </Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <p className='text-center'>У вас недостаточно средств</p>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button variant="outline-danger" onClick={() => setAlert(false)}>Закрыть</Button>
+                                </Modal.Footer>
+                            </Modal>
                         </Row>
                     </Col>
                 </Row>

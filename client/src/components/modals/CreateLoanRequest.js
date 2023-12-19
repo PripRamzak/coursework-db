@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Dropdown, Form, Modal, Row } from 'react-bootstrap';
+import { Alert, Button, Col, Dropdown, Form, Modal, Row } from 'react-bootstrap';
 import { createLoanRequest, fetchLoanTypes } from '../../http/loanApi';
 
 function CreateLoanRequest({ show, onHide, personId }) {
@@ -11,6 +11,7 @@ function CreateLoanRequest({ show, onHide, personId }) {
     const [fullPayment, setFullPayment] = useState(0)
     const [payment, setPayment] = useState(0)
     const [file, setFile] = useState(null)
+    const [alert, setAlert] = useState(false)
 
     useEffect(() => {
         fetchLoanTypes().then(data => setLoanTypes(data))
@@ -21,20 +22,31 @@ function CreateLoanRequest({ show, onHide, personId }) {
     }, [amount, years])
 
     const addType = () => {
+        if (!file || selectedType == {}) {
+            setAlert(true)
+            return
+        }
+
         const formData = new FormData()
         formData.append('amount', amount)
         formData.append('years', years)
         formData.append('file', file)
         formData.append('typeId', selectedType.id)
         formData.append('personId', personId)
-        createLoanRequest(formData).then(data => {
-            setSelectedType({})
-            setTypeNotChoosen(true)
-            setAmount(0)
-            setYears(0)
-            setFile(null)
-            onHide()
-        })
+
+        try {
+            createLoanRequest(formData).then(data => {
+                setSelectedType({})
+                setTypeNotChoosen(true)
+                setAmount(0)
+                setYears(0)
+                setFile(null)
+                onHide()
+            })
+        }
+        catch (e) {
+            setAlert(true)
+        }
     }
 
     const calculatePayment = (amount, years, annualInterestRate) => {
@@ -69,6 +81,8 @@ function CreateLoanRequest({ show, onHide, personId }) {
                                     onClick={() => {
                                         setSelectedType(type)
                                         setTypeNotChoosen(false)
+                                        setAmount(type.min_amount)
+                                        setYears(type.min_term)
                                     }}>
                                     {type.name}
                                 </Dropdown.Item>)
@@ -117,6 +131,9 @@ function CreateLoanRequest({ show, onHide, personId }) {
                         <Form.Text>PDF файл</Form.Text>
                     </Form.Group>
                 </Form>
+                {alert &&
+                    <Alert className='mt-3 p-1 text-center' variant='danger'>Вы не заполнили все поля</Alert>
+                }
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
