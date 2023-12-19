@@ -22,6 +22,11 @@ export const fetchLoans = async (personId, typeId) => {
     return data
 }
 
+export const exportLoans = async () => {
+    const { data } = await $authHost.get('api/loan/table/export')
+    return data
+}
+
 export const createLoanRequest = async (request) => {
     const { data } = await $authHost.post('api/loan_request/create', request)
     return data
@@ -42,6 +47,11 @@ export const fetchLoanRequests = async (personId) => {
     return data
 }
 
+export const exportLoanRequests = async () => {
+    const { data } = await $authHost.get('api/loan_request/table/export')
+    return data
+}
+
 export const deleteLoanRequest = async (id) => {
     const { data } = await $authHost.delete('api/loan_request/' + id)
     return data
@@ -54,5 +64,10 @@ export const createLoanType = async (type) => {
 
 export const fetchLoanTypes = async () => {
     const { data } = await $host.get('api/loan_type')
+    return data
+}
+
+export const exportLoanTypes = async () => {
+    const { data } = await $authHost.get('api/loan_type/table/export')
     return data
 }

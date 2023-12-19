@@ -1,5 +1,6 @@
 const uuid = require('uuid')
 const path = require('path')
+const sequelize = require('../db')
 const { LoanRequest } = require('../models/models')
 const ApiError = require('../error/apiError')
 
@@ -20,6 +21,7 @@ class LoanRequestController {
         const request = await LoanRequest.create({amount, years, date, file_document: fileName, personId, loanTypeId: typeId })
         return res.json(request)
     }
+
     async changeStatus(req, res) {
         const { loanRequestId, newStatus } = req.body
         const request = await LoanRequest.findOne({ where: { id: loanRequestId } })
@@ -29,6 +31,7 @@ class LoanRequestController {
 
         return res.json(request)
     }
+
     async getAll(req, res) {
         const { personId } = req.query
         let requests;
@@ -44,6 +47,16 @@ class LoanRequestController {
 
         return res.json(requests)
     }
+
+    async export(req, res) {
+        await sequelize.query("COPY loan_requests TO '/tmp/loan_requests.csv' DELIMITER ',' CSV HEADER", {
+            model: LoanRequest,
+            mapToModel: true
+        })
+
+        return res.json({message: 'Export successed'})
+    }
+
     async deleteOne(req, res) {
         const { id } = req.params
 

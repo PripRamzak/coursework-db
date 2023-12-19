@@ -1,6 +1,7 @@
 const ApiError = require('../error/apiError')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const sequelize = require('../db')
 const { Account } = require('../models/models')
 
 const generateJwt = (id, email, role, status, personId) => {
@@ -45,7 +46,7 @@ class AccountController {
     async activation(req, res, next) {
         const { person_id, account_id } = req.body
 
-        const account = await Account.findOne({ where: {id: account_id } })
+        const account = await Account.findOne({ where: { id: account_id } })
         if (!account) {
             return next(ApiError.badRequest('Unauthorized'))
         }
@@ -61,6 +62,15 @@ class AccountController {
     async check(req, res, next) {
         const token = generateJwt(req.account.id, req.account.email, req.account.role)
         return res.json({ token })
+    }
+
+    async export(req, res) {
+        await sequelize.query("COPY accounts TO '/tmp/accounts.csv' DELIMITER ',' CSV HEADER", {
+            model: Account,
+            mapToModel: true
+        })
+
+        return res.json({message: 'Export successed'})
     }
 }
 

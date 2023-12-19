@@ -1,3 +1,4 @@
+const sequelize = require('../db')
 const { Person } = require('../models/models')
 const ApiError = require('../error/apiError')
 
@@ -20,6 +21,15 @@ class PersonController {
         const { id } = req.params
         const person = Person.findOne({ where: { id } })
         return res.json(person)
+    }
+
+    async export(req, res) {
+        await sequelize.query("COPY persons TO '/tmp/persons.csv' DELIMITER ',' CSV HEADER", {
+            model: Person,
+            mapToModel: true
+        })
+
+        return res.json({message: 'Export successed'})
     }
 }
 

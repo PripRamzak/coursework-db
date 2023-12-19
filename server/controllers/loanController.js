@@ -1,3 +1,4 @@
+const sequelize = require('../db')
 const { Loan, LoanRequest, LoanType, Card } = require('../models/models')
 const ApiError = require('../error/apiError')
 
@@ -65,6 +66,15 @@ class loanController {
 
         const loan = Loan.findOne({ where: { id } })
         return res.json(loan)
+    }
+
+    async export(req, res) {
+        await sequelize.query("COPY loans TO '/tmp/loans.csv' DELIMITER ',' CSV HEADER", {
+            model: Loan,
+            mapToModel: true
+        })
+
+        return res.json({message: 'Export successed'})
     }
 }
 

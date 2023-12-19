@@ -5,5 +5,7 @@ const checkRole = require('../middleware/checkRoleMiddleware')
 
 router.post('/', checkRole('ADMIN'), cardTypeController.create)
 router.get('/', cardTypeController.getAll)
+router.get('/table/export', checkRole('ADMIN'), cardTypeController.export)
+
 
 module.exports = router

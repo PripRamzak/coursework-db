@@ -1,4 +1,5 @@
 const { Card, Payment } = require('../models/models')
+const sequelize = require('../db')
 const ApiError = require('../error/apiError')
 
 class PaymentController {
@@ -30,6 +31,7 @@ class PaymentController {
 
         return res.json(payment)
     }
+
     async getAll(req, res) {
         const { paymentId, cardId } = req.query
         let payments;
@@ -48,6 +50,15 @@ class PaymentController {
         }
 
         return res.json(payments)
+    }
+
+    async export(req, res) {
+        await sequelize.query("COPY payments TO '/tmp/payments.csv' DELIMITER ',' CSV HEADER", {
+            model: Payment,
+            mapToModel: true
+        })
+
+        return res.json({message: 'Export successed'})
     }
 }
 

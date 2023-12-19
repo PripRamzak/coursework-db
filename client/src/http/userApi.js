@@ -19,6 +19,11 @@ export const activation = async (account_id, person_id) => {
     return jwtDecode(data.token)
 }
 
+export const exportAccounts = async () => {
+    const { data } = await $authHost.get('api/account/table/export')
+    return data
+}
+
 export const check = async () => {
     const { data } = await $authHost.get('api/account/auth')
     localStorage.setItem('token', data.token)
@@ -32,5 +37,10 @@ export const createPerson = async (last_name, first_name, middle_name, ident_num
 
 export const fetchPersons = async () => {
     const { data } = await $authHost.get('api/person')
+    return data
+}
+
+export const exportPersons = async () => {
+    const { data } = await $authHost.get('api/person/table/export')
     return data
 }

@@ -1,5 +1,6 @@
-const { Card, CardRequest } = require('../models/models')
-const apiError = require('../error/apiError')
+const { Card } = require('../models/models')
+const sequelize = require('../db')
+const apiError = require('../error/apiError');
 
 function getRandomInt(min, max) {
     min = Math.ceil(min)
@@ -24,6 +25,7 @@ class CardController {
         const person = await Card.create({ number, expire_date, cvv, personId, cardTypeId })
         return res.json(person)
     }
+
     async getAll(req, res) {
         const { personId, typeId } = req.query
         let cards;
@@ -49,6 +51,15 @@ class CardController {
 
         const card = Card.findOne({ where: { id } })
         return res.json(card)
+    }
+
+    async export(req, res) {
+        await sequelize.query("COPY cards TO '/tmp/cards.csv' DELIMITER ',' CSV HEADER", {
+            model: Card,
+            mapToModel: true
+        })
+
+        return res.json({message: 'Export successed'})
     }
 }
 

@@ -1,3 +1,4 @@
+const sequelize = require('../db')
 const { CardRequest } = require('../models/models')
 const apiError = require('../error/apiError');
 
@@ -8,6 +9,7 @@ class CardRequestController {
         const request = await CardRequest.create({ date, personId, cardTypeId: typeId })
         return res.json(request)
     }
+
     async changeStatus(req, res) {
         const { cardRequestId, newStatus } = req.body
         const request = await CardRequest.findOne({ where: { id: cardRequestId } })
@@ -17,6 +19,7 @@ class CardRequestController {
 
         return res.json(request)
     }
+
     async getAll(req, res) {
         const { personId } = req.query
         let requests;
@@ -32,6 +35,16 @@ class CardRequestController {
 
         return res.json(requests)
     }
+
+    async export(req, res) {
+        await sequelize.query("COPY card_requests TO '/tmp/care_requests.csv' DELIMITER ',' CSV HEADER", {
+            model: CardRequest,
+            mapToModel: true
+        })
+
+        return res.json({message: 'Export successed'})
+    }
+
     async deleteOne(req, res) {
         const { id } = req.params
 

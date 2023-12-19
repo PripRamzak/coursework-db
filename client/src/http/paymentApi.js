@@ -14,3 +14,8 @@ export const fetchPayments = async (cardId) => {
     })
     return data
 }
+
+export const exportPayments = async () => {
+    const { data } = await $authHost.get('api/payment/table/export')
+    return data
+}

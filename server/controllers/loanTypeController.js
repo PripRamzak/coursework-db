@@ -1,5 +1,6 @@
 const uuid = require('uuid')
 const path = require('path')
+const sequelize = require('../db')
 const { LoanType } = require('../models/models')
 const apiError = require('../error/apiError')
 
@@ -18,9 +19,19 @@ class LoanTypeController {
         const type = await LoanType.create({ name, annual_interest_rate, min_amount, max_amount, min_term, max_term, description, img: fileName })
         return res.json(type)
     }
+
     async getAll(req, res) {
         const types = await LoanType.findAll()
         return res.json(types)
+    }
+
+    async export(req, res) {
+        await sequelize.query("COPY loan_types TO '/tmp/loan_types.csv' DELIMITER ',' CSV HEADER", {
+            model: LoanType,
+            mapToModel: true
+        })
+
+        return res.json({message: 'Export successed'})
     }
 }
 
