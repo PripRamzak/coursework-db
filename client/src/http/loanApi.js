@@ -22,6 +22,11 @@ export const fetchLoans = async (personId, typeId) => {
     return data
 }
 
+export const fetchLoansCount = async () => {
+    const { data } = await $authHost.get('api/loan/count')
+    return data
+}
+
 export const exportLoans = async () => {
     const { data } = await $authHost.get('api/loan/table/export')
     return data

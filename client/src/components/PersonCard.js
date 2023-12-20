@@ -84,19 +84,17 @@ const PersonCard = observer(() => {
                     </Col>
                     <Col>
                         <Row>
-                            <Button variant='outline-dark' onClick={() => setCardDetailsVisible(true)}>
-                                Реквизиты карты
-                            </Button>
+                            <Button variant='outline-dark' onClick={() => setCardDetailsVisible(true)}>Реквизиты карты</Button>
                             <CardDetails show={cardDetailsVisible} onHide={() => setCardDetailsVisible(false)} card={card.cards[index]} />
-                            <Button className='mt-4' variant='outline-dark' onClick={() => setPaymentsVisible(true)}>
-                                Совершить платеж
-                            </Button>
+                            <Button className='mt-4' variant='outline-dark' onClick={() => setPaymentsVisible(true)}>Совершить платеж</Button>
                             <CreatePayment show={paymentVisible} onHide={() => setPaymentsVisible(false)} cardId={card.cards[index].id} />
-                            <Button className='mt-4' variant='outline-dark' onClick={() => setCardStatementVisible(true)}>
-                                Выписка по карте
-                            </Button>
+                            <Button className='mt-4' variant='outline-dark' onClick={() => setCardStatementVisible(true)}>Выписка по карте</Button>
+                            <Button className='mt-4' variant='outline-dark' onClick={() => setCardRequestVisible(true)}>Оформить карту</Button>
+                            <CreateCardRequest show={cardRequestVisible} onHide={() => setCardRequestVisible(false)} personId={account.personId} />
                             <CardStatement show={cardStatementVisible} onHide={() => setCardStatementVisible(false)} cardId={card.cards[index].id} />
-                            <Button className='mt-4' variant='outline-dark' onClick={() => payLoanPayment(loans[0], card.cards[index].id)}>Погасить кредит</Button>
+                            {loans.length != 0 &&
+                                <Button className='mt-4' variant='outline-dark' onClick={() => payLoanPayment(loans[0], card.cards[index].id)}>Погасить кредит</Button>
+                            }
                             <Modal
                                 show={alert}
                                 size="sm"

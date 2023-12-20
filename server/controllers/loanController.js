@@ -61,6 +61,15 @@ class loanController {
         return res.json(loans)
     }
 
+    async getCountByLoanId(req, res) {
+        const loans = await Loan.findAll({
+            attributes: ['loanTypeId', [sequelize.fn('COUNT', sequelize.col('id')), 'count']],
+            group: ['loanTypeId']
+        })
+
+        return res.json(loans)
+    }
+
     async getOne(req, res) {
         const { id } = req.params
 

@@ -46,6 +46,15 @@ class CardController {
         return res.json(cards)
     }
 
+    async getCountByCardId(req, res) {
+        const cards = await Card.findAll({
+            attributes: ['cardTypeId', [sequelize.fn('COUNT', sequelize.col('id')), 'count']],
+            group: ['cardTypeId']
+        })
+
+        return res.json(cards)
+    }
+
     async getOne(req, res) {
         const { id } = req.params
 
@@ -59,7 +68,7 @@ class CardController {
             mapToModel: true
         })
 
-        return res.json({message: 'Export successed'})
+        return res.json({ message: 'Export successed' })
     }
 }
 

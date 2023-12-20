@@ -6,7 +6,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 
 router.post('/', checkRole('WORKER'), cardController.create)
 router.get('/', authMiddleware, cardController.getAll)
-router.get('/:id', authMiddleware, cardController.getOne)
+router.get('/count', checkRole('WORKER'), cardController.getCountByCardId)
 router.get('/table/export', checkRole('ADMIN'), cardController.export)
 
 module.exports = router

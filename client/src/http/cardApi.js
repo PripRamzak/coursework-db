@@ -16,6 +16,11 @@ export const fetchCards = async (personId, typeId) => {
     return data
 }
 
+export const fetchCardsCount = async () => {
+    const { data } = await $authHost.get('api/card/count')
+    return data
+}
+
 export const exportCards = async () => {
     const { data } = await $authHost.get('api/card/table/export')
     return data

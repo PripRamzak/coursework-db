@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Card, Col, Container, Row, Table } from 'react-bootstrap';
 import { Context } from '..';
-import { fetchCardTypes, fetchCards } from '../http/cardApi';
+import { fetchCardTypes, fetchCards, fetchCardsCount } from '../http/cardApi';
 import { observer } from 'mobx-react-lite';
 import { fetchPersons } from '../http/userApi';
 import { fetchPayments } from '../http/paymentApi';
@@ -10,11 +10,13 @@ const WorkerCards = observer(() => {
     const { card } = useContext(Context)
     const [persons, setPersons] = useState([])
     const [payments, setPayments] = useState([])
+    const [cardCount, setCardCount] = useState([])
     const [selectedType, setSelectedType] = useState({})
 
     useEffect(() => {
         fetchPersons().then(data => setPersons(data))
         fetchPayments().then(data => setPayments(data))
+        fetchCardsCount().then(data => setCardCount(data))
         fetchCardTypes().then(data => card.setTypes(data))
     }, [])
 
@@ -70,6 +72,7 @@ const WorkerCards = observer(() => {
 
     return (
         <Container>
+            <h2 className='mt-2 text-center'>Карты клиентов</h2>
             <Row className="mt-3 d-flex">
                 {card.types.map(type =>
                     <Col key={type.id} md="3">
@@ -105,6 +108,23 @@ const WorkerCards = observer(() => {
                             <td>{card.number}</td>
                             <td>{getAmountOfCharges(card.id)}</td>
                             <td>{getAmountOfPayments(card.id)}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </Table>
+            <h2 className='mt-5 text-center'>Карты</h2>
+            <Table striped bordered hover className='mt-3'>
+                <thead>
+                    <tr>
+                        <th>Карта</th>
+                        <th>Количество карт</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {cardCount.map(card =>
+                        <tr key={card.id}>
+                            <td>{getCardTypeName(card.cardTypeId)}</td>
+                            <td>{(card.count)}</td>
                         </tr>
                     )}
                 </tbody>

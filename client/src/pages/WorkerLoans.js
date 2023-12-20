@@ -2,17 +2,19 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Card, Col, Container, Row, Table } from 'react-bootstrap';
 import { observer } from 'mobx-react-lite';
 import { fetchPersons } from '../http/userApi';
-import { fetchLoanTypes, fetchLoans } from '../http/loanApi';
+import { fetchLoanTypes, fetchLoans, fetchLoansCount } from '../http/loanApi';
 
 const WorkerLoans = observer(() => {
     const [loans, setLoans] = useState([])
     const [loanTypes, setLoanTypes] = useState([])
+    const [loanCount, setLoanCount] = useState([])
     const [persons, setPersons] = useState([])
     const [selectedType, setSelectedType] = useState({})
 
     useEffect(() => {
         fetchPersons().then(data => setPersons(data))
         fetchLoanTypes().then(data => setLoanTypes(data))
+        fetchLoansCount().then(data => setLoanCount(data))
     }, [])
 
     useEffect(() => {
@@ -45,6 +47,7 @@ const WorkerLoans = observer(() => {
 
     return (
         <Container>
+            <h2 className='mt-2 text-center'>Кредиты клиентов</h2>
             <Row className="mt-3 d-flex">
                 {loanTypes.map(type =>
                     <Col key={type.id} md="3">
@@ -78,6 +81,23 @@ const WorkerLoans = observer(() => {
                             <td>{getLoanTypeName(loan.loanTypeId)}</td>
                             <td>{loan.expire_date}</td>
                             <td>{Number(loan.amount).toFixed(2)}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </Table>
+            <h2 className='mt-5 text-center'>Кредиты</h2>
+            <Table striped bordered hover className='mt-3'>
+                <thead>
+                    <tr>
+                        <th>Кредиты</th>
+                        <th>Количество кредитов</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {loanCount.map(card =>
+                        <tr key={card.id}>
+                            <td>{getLoanTypeName(card.loanTypeId)}</td>
+                            <td>{(card.count)}</td>
                         </tr>
                     )}
                 </tbody>

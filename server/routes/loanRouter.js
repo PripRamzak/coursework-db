@@ -7,6 +7,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 router.post('/create', checkRole('WORKER'), loanController.create)
 router.post('/pay', authMiddleware, loanController.pay)
 router.get('/', authMiddleware, loanController.getAll)
+router.get('/count', checkRole('WORKER'), loanController.getCountByLoanId)
 router.get('/table/export', checkRole('ADMIN'), loanController.export)
 
 module.exports = router

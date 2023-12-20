@@ -24,8 +24,8 @@ const PersonLoan = observer(() => {
 
     return (
         <React.Fragment>
-            <h1 className='mt-4'>
-                Кредиты
+            <h1 className='mt-4 text-center'>
+                
             </h1>
             {loans.length === 0 ?
                 <div className='mt-2'>
