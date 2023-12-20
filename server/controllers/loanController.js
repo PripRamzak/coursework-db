@@ -35,7 +35,7 @@ class loanController {
         }
 
         loan.amount -= loan.payment
-        loan.amount = Number(loan.payment).toFixed(2)
+        loan.amount = Number(loan.amount).toFixed(2)
         await loan.save()
 
         return res.json(loan)
