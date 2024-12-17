@@ -9,8 +9,6 @@ function CreatePayment({ show, onHide }) {
     const [paymentParameters, setPaymentParameters] = useState([])
     const [alert, setAlert] = useState('')
 
-    console.log(paymentParameters)
-
     const addPayment = async () => {
         setAlert('')
         try {

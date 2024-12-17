@@ -24,12 +24,9 @@ class UserPaymentController {
         const userCard = await Card.findOne({ where: { id: cardId } })
 
         if (type === 'Зачисление') {
-            userCard.balance += Number(amount).toFixed(2)
+            userCard.balance += Number(amount)
         }
         else {
-            console.log(Number(userCard.balance).toFixed(2)) 
-            console.log(Number(amount).toFixed(2))
-            console.log(Number(userCard.balance).toFixed(2) < Number(amount).toFixed(2))
             if (Number(userCard.balance) < Number(amount))
                 return next(ApiError.badRequest('Недостаточно средств'));
             userCard.balance -= Number(amount)
@@ -42,6 +39,46 @@ class UserPaymentController {
         const userPayment = await UserPayment.create({ amount, type, data, date, cardId, paymentId })
 
         return res.json(userPayment)
+    }
+
+    async createTransfer(req, res, next) {
+        const { senderCardId, receiverCardNumber, amount } = req.body
+
+        if (amount <= 0) {
+            return next(ApiError.badRequest('Некорректная сумма'))
+        }
+        else if (!receiverCardNumber) {
+            return next(ApiError.badRequest('Введите номер карты'))
+        }
+        else if (receiverCardNumber.length !== 16) {
+            return next(ApiError.badRequest('Некорректный номер карты'))
+        }
+
+        const receiverCard = await Card.findOne({ where: { number: receiverCardNumber } })
+
+        if (!receiverCard) {
+            return next(ApiError.badRequest('Проверьте правильно ли Вы ввели номер карты'))
+        }
+
+        const senderCard = await Card.findOne({ where: { id: senderCardId } })
+        if (Number(senderCard.balance) < Number(amount))
+            return next(ApiError.badRequest('Недостаточно средств'));
+
+        senderCard.balance -= Number(amount)
+        senderCard.balance = senderCard.balance.toFixed(2)
+
+        receiverCard.balance += Number(amount)
+        receiverCard.balance = receiverCard.balance.toFixed(2)
+
+        await senderCard.save();
+        await receiverCard.save();
+
+        const date = new Date()
+
+        const senderPayment = await UserPayment.create({ amount, type: 'Оплата', data: [receiverCardNumber], date, cardId: senderCardId, paymentId: 1001 })
+        await UserPayment.create({amount, type: 'Зачисление', data: [], date, cardId: receiverCard.id, paymentId: 1001})
+
+        return res.json(senderPayment)
     }
 
     async get(req, res) {
@@ -64,7 +101,7 @@ class UserPaymentController {
         if (!cardId)
             return
 
-        const userPayments = await UserPayment.findAll({ include: Payment, where: {cardId} })
+        const userPayments = await UserPayment.findAll({ include: Payment, where: { cardId }, order: [['date', 'desc']] })
 
         return res.json(userPayments)
     }

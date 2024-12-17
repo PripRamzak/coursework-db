@@ -6,6 +6,13 @@ function CardDetails({ show, onHide, card }) {
     if (!card)
         return;
 
+    const formatDate = (dateString) => {
+        const dateParts = dateString.split('-');
+        const year = dateParts[0].substring(2);
+        const month = dateParts[1]; 
+        return `${month}/${year}`;
+    };
+
     return (
         <Modal
             show={show}
@@ -18,8 +25,8 @@ function CardDetails({ show, onHide, card }) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <p>Номер карты: {card.number}</p>
-                <p>Срок карты: {card.expire_date}</p>
+                <p>Номер карты: {card.number.replace(/(\d{4})(?=\d)/g, '$1 ')}</p>
+                <p>Срок карты: {formatDate(card.expire_date)}</p>
                 <p>CVV: {card.cvv}</p>
             </Modal.Body>
             <Modal.Footer>

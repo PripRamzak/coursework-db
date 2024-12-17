@@ -12,6 +12,7 @@ import { fetchLoans, payLoan } from '../http/loanApi';
 import { createPayment } from '../http/paymentApi';
 import { useNavigate } from 'react-router-dom';
 import { PAYMENTS_ROUTE, PERSONAL_ACCOUNT_ROUTE } from '../utils/consts';
+import CreateMoneyTransfer from './modals/CreateMoneyTransfer';
 
 
 const PersonCard = observer(() => {
@@ -24,6 +25,7 @@ const PersonCard = observer(() => {
 
     const [cardDetailsVisible, setCardDetailsVisible] = useState(false)
     const [cardStatementVisible, setCardStatementVisible] = useState(false)
+    const [moneyTransferVisible, setMoneyTransferVisible] = useState(false)
     const [cardRequestVisible, setCardRequestVisible] = useState(false)
 
     useEffect(() => {
@@ -91,6 +93,7 @@ const PersonCard = observer(() => {
                         <Row className='d-flex justify-content-center'>
                             <Button variant='outline-dark' onClick={() => setCardDetailsVisible(true)}>Реквизиты карты</Button>
                             <Button className='mt-4' variant='outline-dark' onClick={() => setCardStatementVisible(true)}>Выписка по карте</Button>
+                            <Button className='mt-4' variant='outline-dark' onClick={() => setMoneyTransferVisible(true)}>Сделать перевод</Button>
                             <Button className='mt-4' variant='outline-dark' onClick={() => setCardRequestVisible(true)}>Оформить карту</Button>
                             {loans.length != 0 &&
                                 <Button className='mt-4' variant='outline-dark' onClick={() => payLoanPayment(loans[0], selectedCard.id)}>Погасить кредит</Button>
@@ -119,6 +122,7 @@ const PersonCard = observer(() => {
             {selectedCard &&
                 <CardStatement show={cardStatementVisible} onHide={() => setCardStatementVisible(false)} cardId={selectedCard.id} />
             }
+            <CreateMoneyTransfer show={moneyTransferVisible} onHide={() => setMoneyTransferVisible(false)} />
             <CreateCardRequest show={cardRequestVisible} onHide={() => setCardRequestVisible(false)} personId={account.personId} />
         </React.Fragment>
     );

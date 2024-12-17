@@ -5,6 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware')
 const checkRole = require('../middleware/checkRoleMiddleware')
 
 router.post('/', authMiddleware, userPaymentController.create)
+router.post('/transfer', authMiddleware, userPaymentController.createTransfer)
 router.get('/', authMiddleware, userPaymentController.get)
 router.get('/card_statement', authMiddleware, userPaymentController.getCardStatement)
 router.get('/table/export', checkRole('ADMIN'), userPaymentController.export)
