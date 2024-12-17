@@ -4,6 +4,7 @@ import App from './App';
 import DeviceStore from './store/DeviceStore';
 import AccountStore from './store/AccountStore';
 import CardStore from './store/CardStore';
+import LoanStore from './store/LoanStore';
 
 export const Context = createContext(null)
 
@@ -12,7 +13,8 @@ root.render(
     <Context.Provider value={{
         account: new AccountStore(),
         device: new DeviceStore(),
-        card: new CardStore()
+        card: new CardStore(),
+        loan: new LoanStore()
     }}>
         <React.StrictMode>
             <App />

@@ -7,10 +7,6 @@ import { fetchCardTypes } from '../http/cardApi';
 const Cards = observer(() => {
     const { card } = useContext(Context)
 
-    useEffect(() => {
-        fetchCardTypes().then(data => card.setTypes(data))
-    }, [])
-
     return (
         <Container>
             <Row>

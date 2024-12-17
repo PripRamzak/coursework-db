@@ -20,6 +20,11 @@ export const createMoneyTransfer = async(senderCardId, receiverCardNumber, amoun
     return data
 }
 
+export const createLoanPaymment = async(cardId, loanId, amount) => {
+    const {data} = await $authHost.post('api/user_payment/pay_loan', {cardId, loanId, amount})
+    return data
+}
+
 export const createFavouritePayment = async (accountId, paymentId) => {
     const { data } = await $authHost.post('api/favourite_payment', { accountId, paymentId })
     return data

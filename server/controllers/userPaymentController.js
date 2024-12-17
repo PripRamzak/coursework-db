@@ -1,4 +1,4 @@
-const { Payment, Card, UserPayment } = require('../models/models')
+const { Payment, Card, UserPayment, Loan } = require('../models/models')
 const sequelize = require('../db')
 const ApiError = require('../error/apiError')
 const { where } = require('sequelize')
@@ -76,9 +76,40 @@ class UserPaymentController {
         const date = new Date()
 
         const senderPayment = await UserPayment.create({ amount, type: 'Оплата', data: [receiverCardNumber], date, cardId: senderCardId, paymentId: 1001 })
-        await UserPayment.create({amount, type: 'Зачисление', data: [], date, cardId: receiverCard.id, paymentId: 1001})
+        await UserPayment.create({ amount, type: 'Зачисление', data: [], date, cardId: receiverCard.id, paymentId: 1001 })
 
         return res.json(senderPayment)
+    }
+
+    async payLoan(req, res) {
+        const { cardId, loanId, amount } = req.body
+
+        if (amount <= 0) {
+            return next(ApiError.badRequest('Некорректная сумма'))
+        }
+        else if (!cardId) {
+            return next(ApiError.badRequest('Выберите карту'))
+        }
+
+        const userCard = await Card.findOne({ where: { id: cardId } })
+        if (Number(userCard.balance) < Number(amount))
+            return next(ApiError.badRequest('Недостаточно средств'));
+
+        userCard.balance -= Number(amount)
+        userCard.balance = userCard.balance.toFixed(2)
+
+        const userLoan = await Loan.findOne({ where: { id: loanId } })
+        userLoan.amount -= Number(amount)
+        userLoan.amount = userLoan.amount.toFixed(2)
+
+        await userLoan.save()
+        await userCard.save()
+
+        const date = new Date()
+
+        const loanPayment = await UserPayment.create({ amount, type: 'Оплата', data: [loanId], date, cardId: cardId, paymentId: 1002 })
+
+        return res.json(loanPayment)
     }
 
     async get(req, res) {

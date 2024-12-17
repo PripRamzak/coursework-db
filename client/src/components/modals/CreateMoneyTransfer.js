@@ -21,7 +21,7 @@ function CreateMoneyTransfer({ show, onHide }) {
     const addTransfer = async () => {
         setAlert('')
 
-        const senderCard = card.cards.find(personCard => personCard.id == senderCardId)
+        const senderCard = card.userCards.find(personCard => personCard.id == senderCardId)
         if (senderCard.number == receiverCardNumber) {
             setAlert('Карты получателя и отправителя должны быть разными')
             return
@@ -35,7 +35,7 @@ function CreateMoneyTransfer({ show, onHide }) {
             setAlert(e.response.data.message)
             return
         }
-        fetchCards(account.personId).then(data => card.setCards(data))
+        fetchCards(account.personId).then(data => card.setUserCards(data))
         setTransferType(0)
         setBalance(null)
         setSenderCardId(0)
@@ -62,20 +62,19 @@ function CreateMoneyTransfer({ show, onHide }) {
     }
 
     useEffect(() => {
-        if (card)
-            if (card.cards)
-                setSenderCardId(card.cards[0].id)
+        if (card.userCards.length !== 0)
+            setSenderCardId(card.userCards[0].id)
     }, [card])
 
     useEffect(() => {
         if (senderCardId !== 0)
-            setBalance(card.cards?.find(personCard => personCard.id == senderCardId).balance)
+            setBalance(card.userCards?.find(personCard => personCard.id == senderCardId).balance)
     }, [senderCardId])
 
     useEffect(() => {
-        if (card && transferType === 0) {
-            if (card.cards)
-                setReceiverCardNumber(card.cards[0].number)
+        if (transferType === 0) {
+            if (card.userCards.length !== 0)
+                setReceiverCardNumber(card.userCards[0].number)
         }
         else if (transferType == 1)
             setReceiverCardNumber('')
@@ -98,7 +97,7 @@ function CreateMoneyTransfer({ show, onHide }) {
                         <Form.Label>{`Баланс: ${balance}`}</Form.Label>
                     }
                     <Form.Select onChange={e => setSenderCardId(e.target.value)}>
-                        {card.cards.map(personCard =>
+                        {card.userCards.map(personCard =>
                             <option key={personCard.id} value={personCard.id}>{getPersonCardName(personCard)}</option>
                         )
                         }
@@ -109,7 +108,7 @@ function CreateMoneyTransfer({ show, onHide }) {
                     </Form.Select>
                     {transferType == 0 &&
                         <Form.Select className='mt-3' onChange={e => setReceiverCardNumber(e.target.value)}>
-                            {card.cards.map(personCard =>
+                            {card.userCards.map(personCard =>
                                 <option key={personCard.id} value={personCard.number}>{getPersonCardName(personCard)}</option>
                             )
                             }

@@ -4,9 +4,16 @@ import { observer } from 'mobx-react-lite';
 import { Context } from '..';
 import mcDuck from '../assets/mc-duck.png';
 import cardImage from '../assets/card_prev.png'
+import { fetchCardTypes } from '../http/cardApi';
+import { fetchLoanTypes } from '../http/loanApi';
 
 const Shop = observer(() => {
-    const { device } = useContext(Context)
+    const {card, loan} = useContext(Context)
+
+    useEffect(() => {
+        fetchCardTypes().then(data => card.setTypes(data))
+        fetchLoanTypes().then(data => loan.setTypes(data))
+    }, [])
 
     /*useEffect(() => {
         fetchTypes().then(data => device.setTypes(data))

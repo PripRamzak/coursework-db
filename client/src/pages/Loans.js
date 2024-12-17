@@ -1,19 +1,16 @@
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Card, Col, Container, Image, Row } from 'react-bootstrap';
 import { fetchLoanTypes } from '../http/loanApi';
+import { Context } from '..';
 
 const Loans = observer(() => {
-    const [loanTypes, setLoanTypes] = useState([])
-
-    useEffect(() => {
-        fetchLoanTypes().then(data => setLoanTypes(data))
-    }, [])
+    const { loan } = useContext(Context)
 
     return (
         <Container>
             <Row>
-                {loanTypes.map(type =>
+                {loan.types.map(type =>
                     <Col key={type.id} className='mt-3' md={4}>
                         <Card className="text-center" style={{ width: 300, cursor: 'pointer', borderWidth: '2px' }}>
                             <Card.Body>

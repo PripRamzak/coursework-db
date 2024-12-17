@@ -17,9 +17,7 @@ import CreateMoneyTransfer from './modals/CreateMoneyTransfer';
 
 const PersonCard = observer(() => {
     const { account, card } = useContext(Context)
-    const navigate = useNavigate()
 
-    const [loans, setLoans] = useState([])
     const [selectedCard, setSelectedCard] = useState(null)
     const [alert, setAlert] = useState(0)
 
@@ -29,17 +27,13 @@ const PersonCard = observer(() => {
     const [cardRequestVisible, setCardRequestVisible] = useState(false)
 
     useEffect(() => {
-        fetchCards(account.personId).then(data => card.setCards(data))
-        fetchLoans(account.personId).then(data => setLoans(data))
-    }, [account])
-
-    useEffect(() => {
-        setSelectedCard(card.cards[0])
+        if (card.userCards)
+            setSelectedCard(card.userCards[0])
     }, [card])
 
     const handleSelect = (selectedIndex) => {
-        if (card.cards)
-            setSelectedCard(card.cards[selectedIndex])
+        if (card.userCards)
+            setSelectedCard(card.userCards[selectedIndex])
     }
 
     const getCardTypeImage = (cardTypeId) => {
@@ -59,13 +53,13 @@ const PersonCard = observer(() => {
             }
 
             await payLoan(loan.id)
-            fetchCards(account.personId).then(data => card.setCards(data))
+            fetchCards(account.personId).then(data => card.setUserCards(data))
         }
     }
 
     return (
         <React.Fragment>
-            {card.cards.length === 0 ?
+            {card.userCards.length === 0 ?
                 <div className='mt-2'>
                     <h3 style={{ color: 'gray' }}>У вас нет карт</h3>
                     <Image className='mt-2' width={200} height={200} src={noCard} />
@@ -76,7 +70,7 @@ const PersonCard = observer(() => {
                 <Row className='mt-4'>
                     <Col md={5}>
                         <Carousel interval={null} indicators={false} onSelect={handleSelect}>
-                            {card.cards.map(personCard =>
+                            {card.userCards.map(personCard =>
                                 <Carousel.Item key={personCard.id}>
                                     <Image className='ms-3'
                                         height='300'
@@ -95,9 +89,6 @@ const PersonCard = observer(() => {
                             <Button className='mt-4' variant='outline-dark' onClick={() => setCardStatementVisible(true)}>Выписка по карте</Button>
                             <Button className='mt-4' variant='outline-dark' onClick={() => setMoneyTransferVisible(true)}>Сделать перевод</Button>
                             <Button className='mt-4' variant='outline-dark' onClick={() => setCardRequestVisible(true)}>Оформить карту</Button>
-                            {loans.length != 0 &&
-                                <Button className='mt-4' variant='outline-dark' onClick={() => payLoanPayment(loans[0], selectedCard.id)}>Погасить кредит</Button>
-                            }
                             <Modal
                                 show={alert}
                                 size="sm"

@@ -1,62 +1,72 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Table } from 'react-bootstrap';
+import { Button, Card, Col, Row, Table } from 'react-bootstrap';
 import { observer } from 'mobx-react-lite';
 import { Context } from '..';
-import { fetchLoanTypes, fetchLoans } from '../http/loanApi';
 import CreateLoanRequest from './modals/CreateLoanRequest';
+import LoanPayment from './modals/LoanPayment';
 
 const PersonLoan = observer(() => {
-    const { account, card } = useContext(Context)
-    const [loans, setLoans] = useState([])
-    const [loanTypes, setLoanTypes] = useState([])
-    const [loanRequestVisible, setLoanRequestVisible] = useState(false)
+    const { account, loan } = useContext(Context)
 
-    useEffect(() => {
-        fetchLoans(account.personId).then(data => setLoans(data))
-        fetchLoanTypes().then(data => setLoanTypes(data))
-    }, [account, card.cards])
+    const [loanRequestVisible, setLoanRequestVisible] = useState(false)
+    const [loanPaymentVisible, setLoanPaymentVisible] = useState(false)
 
     const getLoanTypeName = (loanTypeId) => {
-        if (loanTypes.length === 0)
+        if (loan.types.length === 0)
             return ''
-        return loanTypes.find(type => type.id === loanTypeId).name
+        return loan.types.find(type => type.id === loanTypeId).name
+    }
+
+    const getLoanTypeImg = (loanTypeId) => {
+        if (loan.types.length === 0)
+            return ''
+        return loan.types.find(type => type.id === loanTypeId).img
     }
 
     return (
         <React.Fragment>
-            <h1 className='mt-4 text-center'>
-                
+            <h1 className='mt-2 text-center'>
+                Кредиты
             </h1>
-            {loans.length === 0 ?
-                <div className='mt-2'>
+            {loan.userLoans.length === 0 ?
+                <div className='d-flex flex-column text-center mt-2'>
                     <h3 style={{ color: 'gray' }}>У вас нет кредитов</h3>
-                    <Button className='mt-3 d-flex' variant='outline-dark' onClick={() => setLoanRequestVisible(true)}>Оформить</Button>
-                    <CreateLoanRequest show={loanRequestVisible} onHide={() => setLoanRequestVisible(false)} personId={account.personId} />
+                    <Button className='mt-2 d-flex' variant='outline-dark' onClick={() => setLoanRequestVisible(true)}>Оформить</Button>
+                    <CreateLoanRequest show={loanRequestVisible} onHide={() => setLoanRequestVisible(false)} />
                 </div>
                 :
-                <>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Кредит</th>
-                                <th>Дата окончания погашения</th>
-                                <th>Оставшаяся сумма кредита</th>
-                                <th>Сумма платежа</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loans.map(loan =>
-                                <tr key={loan.id}>
-                                    <td>{getLoanTypeName(loan.loanTypeId)}</td>
-                                    <td>{loan.date}</td>
-                                    <td>{Number(loan.amount).toFixed(2)}</td>
-                                    <td>{loan.payment}</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </Table>
-                </>
+                <div className='mt-3 d-flex justify-content-center'>
+                    <Card style={{ width: '80%' }}>
+                        <Card.Body >
+                            <Card.Title className='h1 text-center' style={{ fontSize: '1.75rem' }}>{getLoanTypeName(loan.userLoans[0].loanTypeId)}</Card.Title>
+                            <Row className='mt-3'>
+                                <Col className='d-flex justify-content-center' md={5}>
+                                    <Card.Img
+                                        height={300}
+                                        style={{ width: '65%' }}
+                                        src={process.env.REACT_APP_API_URL + getLoanTypeImg(loan.userLoans[0].loanTypeId)} />
+                                </Col>
+                                <Col className='ms-4 ' md={6}>
+                                    <Row className='text-center'>
+                                        <Card.Text className='mb-0' style={{ fontSize: '1.35rem' }}>
+                                            <span className='fw-bold'>Дата окончания кредита:</span> {loan.userLoans[0].date}
+                                        </Card.Text>
+                                        <Card.Text className='mb-5' style={{ fontSize: '1.35rem' }}>
+                                            <span className='fw-bold'>Оставшаяся сумма кредита:</span> {loan.userLoans[0].amount.toFixed(2)}
+                                        </Card.Text>
+                                    </Row>
+                                    <Row className='ms-2 d-flex justify-content-center align-items-end' style={{ height: '55%' }}>
+                                        <Button variant='outline-dark' onClick={() => setLoanPaymentVisible(true)}>
+                                            Оплатить кредит
+                                        </Button>
+                                    </Row>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                </div>
             }
+            <LoanPayment show={loanPaymentVisible} onHide={() => setLoanPaymentVisible(false)} />
         </React.Fragment>
     );
 })

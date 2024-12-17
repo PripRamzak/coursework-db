@@ -39,7 +39,7 @@ function CreateUserPayment({ show, onHide, payment }) {
             setAlert(e.response.data.message)
             return
         }
-        fetchCards(account.personId).then(data => card.setCards(data))
+        fetchCards(account.personId).then(data => card.setUserCards(data))
         setAmount(0)
         setData([])
         onHide()
@@ -51,14 +51,13 @@ function CreateUserPayment({ show, onHide, payment }) {
     }, [payment])
 
     useEffect(() => {
-        if (card)
-            if (card.cards)
-                setCardId(card.cards[0].id)
+        if (card.userCards)
+            setCardId(card.userCards[0].id)
     }, [card])
 
     useEffect(() => {
         if (cardId !== 0)
-            setBalance(card.cards?.find(personCard => personCard.id == cardId).balance)
+            setBalance(card.userCards?.find(personCard => personCard.id == cardId).balance)
     }, [cardId])
 
     return (
@@ -84,7 +83,7 @@ function CreateUserPayment({ show, onHide, payment }) {
                                 <Form.Label className='mt-2'>{`Баланс: ${balance}`}</Form.Label>
                             }
                             <Form.Select onChange={e => setCardId(e.target.value)}>
-                                {card.cards.map(personCard =>
+                                {card.userCards.map(personCard =>
                                     <option key={personCard.id} value={personCard.id}>{getPersonCardName(personCard)}</option>
                                 )
                                 }

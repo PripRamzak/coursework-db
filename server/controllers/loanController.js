@@ -1,5 +1,5 @@
 const sequelize = require('../db')
-const { Loan, LoanRequest, LoanType, Card } = require('../models/models')
+const { Loan, LoanRequest, LoanType, Card, UserPayment } = require('../models/models')
 const ApiError = require('../error/apiError')
 
 class loanController {
@@ -18,10 +18,17 @@ class loanController {
 
         const amount = Number(payment * 12 * request.years).toFixed(2)
 
+        const userCard = await Card.findOne({ where: { id: request.cardId } })
+        userCard.balance += Number(request.amount)
+        userCard.balance = Number(userCard.balance).toFixed(2)
+        await userCard.save()
+
         const date = new Date()
         const expire_date = new Date(`${date.getFullYear() + request.years}-${date.getMonth() + 1}-${date.getDate()}`)
 
         const loan = await Loan.create({ date, expire_date, amount, payment, personId: request.personId, loanTypeId: request.loanTypeId })
+        await UserPayment.create({ amount: request.amount, type: 'Зачисление', data: [], date, cardId: request.cardId, paymentId: 1003 })
+
         return res.json(loan)
     }
 
@@ -83,7 +90,7 @@ class loanController {
             mapToModel: true
         })
 
-        return res.json({message: 'Export successed'})
+        return res.json({ message: 'Export successed' })
     }
 }
 

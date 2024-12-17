@@ -10,15 +10,19 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
 
 const NavBar = observer(() => {
-    const { account } = useContext(Context)
+    const { account, card, loan } = useContext(Context)
     const navigate = useNavigate()
 
     const logOut = () => {
         account.setAccount({})
         account.setIsAuth(false)
-    }
 
-    console.log(account)
+        card.setUserCards([])
+        card.setUserRequests([])
+
+        loan.setUserLoans([])
+        loan.setUserRequests([])
+    }
 
     return (
         <Navbar bg="dark" data-bs-theme="dark">

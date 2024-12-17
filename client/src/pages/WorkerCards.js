@@ -21,7 +21,7 @@ const WorkerCards = observer(() => {
     }, [])
 
     useEffect(() => {
-        fetchCards(null, selectedType.id).then(data => card.setCards(data))
+        fetchCards(null, selectedType.id).then(data => card.setUserCards(data))
     }, [selectedType])
 
     const getPersonLastName = (personId) => {
@@ -99,7 +99,7 @@ const WorkerCards = observer(() => {
                     </tr>
                 </thead>
                 <tbody>
-                    {card.cards.map(card =>
+                    {card.userCards.map(card =>
                         <tr key={card.id}>
                             <td>{getPersonLastName(card.personId)}</td>
                             <td>{getPersonFirstName(card.personId)}</td>

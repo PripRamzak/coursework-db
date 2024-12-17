@@ -6,7 +6,7 @@ const ApiError = require('../error/apiError')
 
 class LoanRequestController {
     async create(req, res, next) {
-        const { amount, years, personId, typeId } = req.body
+        const { amount, years, personId, typeId, cardId } = req.body
         const { file } = req.files
 
         if (!amount || !years || !personId || !typeId || !file) {
@@ -18,7 +18,7 @@ class LoanRequestController {
         let fileName = uuid.v4() + ".pdf"
         file.mv(path.resolve(__dirname, '..', 'static', fileName))
 
-        const request = await LoanRequest.create({amount, years, date, file_document: fileName, personId, loanTypeId: typeId })
+        const request = await LoanRequest.create({amount, years, date, file_document: fileName, personId, loanTypeId: typeId, cardId })
         return res.json(request)
     }
 

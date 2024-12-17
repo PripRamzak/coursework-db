@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Alert, Button, Col, Dropdown, Form, Modal, Row } from 'react-bootstrap';
 import { createLoanRequest, fetchLoanTypes } from '../../http/loanApi';
+import { Context } from '../..';
 
-function CreateLoanRequest({ show, onHide, personId }) {
-    const [loanTypes, setLoanTypes] = useState([])
-    const [selectedType, setSelectedType] = useState({})
+function CreateLoanRequest({ show, onHide }) {
+    const { account, card, loan } = useContext(Context)
+
+    const [selectedType, setSelectedType] = useState(null)
+    const [cardId, setCardId] = useState(0)
     const [typeNotChoosen, setTypeNotChoosen] = useState(true)
     const [amount, setAmount] = useState(0)
     const [years, setYears] = useState(0)
@@ -13,15 +16,7 @@ function CreateLoanRequest({ show, onHide, personId }) {
     const [file, setFile] = useState(null)
     const [alert, setAlert] = useState(false)
 
-    useEffect(() => {
-        fetchLoanTypes().then(data => setLoanTypes(data))
-    }, [])
-
-    useEffect(() => {
-        calculatePayment(amount, years, selectedType.annual_interest_rate)
-    }, [amount, years])
-
-    const addType = () => {
+    const addRequest = () => {
         if (!file || selectedType == {}) {
             setAlert(true)
             return
@@ -32,11 +27,13 @@ function CreateLoanRequest({ show, onHide, personId }) {
         formData.append('years', years)
         formData.append('file', file)
         formData.append('typeId', selectedType.id)
-        formData.append('personId', personId)
+        formData.append('personId', account.personId)
+        formData.append('cardId', cardId)
 
         try {
-            createLoanRequest(formData).then(data => {
-                setSelectedType({})
+            createLoanRequest(formData).then(() => {
+                setSelectedType(null)
+                setCardId(0)
                 setTypeNotChoosen(true)
                 setAmount(0)
                 setYears(0)
@@ -55,9 +52,24 @@ function CreateLoanRequest({ show, onHide, personId }) {
         setFullPayment(Number(payment * 12 * years).toFixed(2))
     }
 
+    const getPersonCardName = (personCard) => {
+        const cardName = card.types.find(type => type.id === personCard.cardTypeId).name;
+        return cardName + ' ' + personCard.number.replace(/(\d{4})(?=\d)/g, '$1 ');
+    }
+
     const selectFile = e => {
         setFile(e.target.files[0])
     }
+
+    useEffect(() => {
+        if (selectedType)
+            calculatePayment(amount, years, selectedType.annual_interest_rate)
+    }, [amount, years])
+
+    useEffect(() => {
+        if (card.userCards.length !== 0)
+            setCardId(card.userCards[0].id)
+    }, [card])
 
     return (
         <Modal
@@ -67,15 +79,15 @@ function CreateLoanRequest({ show, onHide, personId }) {
             centered>
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Добавить тип
+                    Оформить заявку на кредит
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
                     <Dropdown>
-                        <Dropdown.Toggle variant='light'>{selectedType.name || 'Кредит'}</Dropdown.Toggle>
+                        <Dropdown.Toggle variant='light'>{selectedType ? selectedType.name : 'Кредит'}</Dropdown.Toggle>
                         <Dropdown.Menu>
-                            {loanTypes.map(type =>
+                            {loan.types.map(type =>
                                 <Dropdown.Item
                                     key={type.id}
                                     onClick={() => {
@@ -93,8 +105,8 @@ function CreateLoanRequest({ show, onHide, personId }) {
                         <Form.Label>Сумма кредита</Form.Label>
                         <Col md={9}>
                             <Form.Range
-                                min={selectedType.min_amount}
-                                max={selectedType.max_amount}
+                                min={selectedType ? selectedType.min_amount : 0}
+                                max={selectedType ? selectedType.max_amount : 0}
                                 step={1000}
                                 value={amount}
                                 onChange={e => setAmount(e.target.value)}
@@ -108,14 +120,23 @@ function CreateLoanRequest({ show, onHide, personId }) {
                         <Form.Label>Срок кредита</Form.Label>
                         <Col md={9}>
                             <Form.Range
-                                min={selectedType.min_term}
-                                max={selectedType.max_term}
+                                min={selectedType ? selectedType.min_term : 0}
+                                max={selectedType ? selectedType.max_term : 0}
                                 step={1}
                                 value={years} onChange={e => setYears(e.target.value)} disabled={typeNotChoosen} />
                         </Col>
                         <Col md={3}>
                             <Form.Control value={years} readOnly />
                         </Col>
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Карта, на которую поступит кредит</Form.Label>
+                        <Form.Select onChange={e => setCardId(e.target.value)}>
+                            {card.userCards.map(personCard =>
+                                <option key={personCard.id} value={personCard.id}>{getPersonCardName(personCard)}</option>
+                            )
+                            }
+                        </Form.Select>
                     </Form.Group>
                     <Form.Group className='mt-3'>
                         <Form.Label>Общая сумма выплат</Form.Label>
@@ -125,10 +146,10 @@ function CreateLoanRequest({ show, onHide, personId }) {
                         <Form.Label>Ежемесячный платеж</Form.Label>
                         <Form.Control value={payment} readOnly />
                     </Form.Group>
-                    <Form.Group className='mt-3'>
+                    <Form.Group className='mt-3 d-flex flex-column'>
                         <Form.Label>Справка о доходах</Form.Label>
-                        <Form.Control onChange={selectFile} type='file' />
                         <Form.Text>PDF файл</Form.Text>
+                        <Form.Control onChange={selectFile} type='file' />
                     </Form.Group>
                 </Form>
                 {alert &&
@@ -137,7 +158,7 @@ function CreateLoanRequest({ show, onHide, personId }) {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
-                <Button variant="outline-success" onClick={addType}>Добавить</Button>
+                <Button variant="outline-success" onClick={addRequest}>Оформить</Button>
             </Modal.Footer>
         </Modal>
     );

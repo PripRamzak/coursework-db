@@ -5,14 +5,7 @@ import { fetchCards, fetchCardRequests, fetchCardTypes } from '../http/cardApi';
 import { observer } from 'mobx-react-lite';
 
 const PersonCardRequest = observer(() => {
-    const { account, card } = useContext(Context)
-
-    useEffect(() => {
-        fetchCards(account.personId).then(data => card.setCards(data))
-        fetchCardTypes().then(data => card.setTypes(data))
-        fetchCardRequests(account.personId).then(data => card.setRequests(data))
-    }, [account])
-
+    const { card } = useContext(Context)
 
     const getCardTypeName = (cardTypeId) => {
         if (card.types.length == 0)
@@ -22,10 +15,10 @@ const PersonCardRequest = observer(() => {
 
     return (
         <React.Fragment>
-            <h1 className='mt-4'>
-                Заявки
+            <h1 className='mt-2 text-center'>
+                Заявки на карты
             </h1>
-            {card.requests.length === 0 ?
+            {card.userRequests.length === 0 ?
                 <div className='mt-2'>
                     <h3 style={{ color: 'gray' }}>У вас нет заявок</h3>
                 </div>
@@ -39,7 +32,7 @@ const PersonCardRequest = observer(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        {card.requests.map(request =>
+                        {card.userRequests.map(request =>
                             <tr key={request.id}>
                                 <td>{getCardTypeName(request.cardTypeId)}</td>
                                 <td>{request.date}</td>

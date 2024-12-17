@@ -162,6 +162,9 @@ Card.belongsTo(CardType)
 CardType.hasMany(CardRequest)
 CardRequest.belongsTo(CardType)
 
+Card.hasMany(LoanRequest)
+LoanRequest.belongsTo(Card)
+
 LoanType.hasMany(Loan)
 Loan.belongsTo(LoanType)
 

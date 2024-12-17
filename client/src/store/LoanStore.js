@@ -1,15 +1,15 @@
 import { makeAutoObservable } from 'mobx'
 
-export default class CardStore {
+export default class LoanStore {
     constructor() {
-        this._cards = []
+        this._loans = []
         this._types = []
         this._requests = []
         makeAutoObservable(this)
     }
 
-    setUserCards(cards) {
-        this._cards = cards
+    setUserLoans(loans) {
+        this._loans = loans
     }
 
     setTypes(types) {
@@ -20,8 +20,8 @@ export default class CardStore {
         this._requests = requests
     }
 
-    get userCards() {
-        return this._cards
+    get userLoans() {
+        return this._loans
     }
 
     get types() {
