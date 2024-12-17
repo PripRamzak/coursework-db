@@ -1,7 +1,6 @@
 const sequelize = require('../db')
 const { DataTypes } = require('sequelize')
 
-
 const Account = sequelize.define('accounts',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -95,7 +94,7 @@ const LoanRequest = sequelize.define('loan_requests',
         date: { type: DataTypes.DATEONLY, allowNull: false },
         amount: { type: DataTypes.FLOAT, allowNull: false },
         years: { type: DataTypes.INTEGER, allowNull: false },
-        file_document: {type: DataTypes.STRING, allowNull: false},
+        file_document: { type: DataTypes.STRING, allowNull: false },
         status: { type: DataTypes.ENUM('Обрабатывается', 'Одобрено', 'Отказано'), defaultValue: 'Обрабатывается' }
     },
     {
@@ -105,10 +104,38 @@ const LoanRequest = sequelize.define('loan_requests',
 const Payment = sequelize.define('payments',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        name: { type: DataTypes.STRING, allowNull: false },
+        parameters: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: false }
+    },
+    {
+        freezeTableName: true
+    })
+
+const PaymentsGroup = sequelize.define('payments_groups',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        name: { type: DataTypes.STRING, allowNull: false },
+        parentId: { type: DataTypes.INTEGER, allowNull: true }
+    },
+    {
+        freezeTableName: true
+    })
+
+const UserPayment = sequelize.define('user_payments',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
         amount: { type: DataTypes.FLOAT, allowNull: false },
-        code: { type: DataTypes.STRING, allowNull: false },
+        type: { type: DataTypes.ENUM('Зачисление', 'Оплата'), allowNull: false },
+        data: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: false },
         date: { type: DataTypes.DATE, allowNull: false },
-        type: { type: DataTypes.ENUM('Зачисление', 'Оплата'), allowNull: false }
+    },
+    {
+        freezeTableName: true
+    })
+
+const FavouritePayment = sequelize.define('favourite_payments',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true }
     },
     {
         freezeTableName: true
@@ -129,9 +156,6 @@ Loan.belongsTo(Person)
 Person.hasMany(LoanRequest)
 LoanRequest.belongsTo(Person)
 
-Card.hasMany(Payment)
-Payment.belongsTo(Card)
-
 CardType.hasMany(Card)
 Card.belongsTo(CardType)
 
@@ -144,6 +168,21 @@ Loan.belongsTo(LoanType)
 LoanType.hasMany(LoanRequest)
 LoanRequest.belongsTo(LoanType)
 
+PaymentsGroup.hasMany(Payment)
+Payment.belongsTo(PaymentsGroup)
+
+Card.hasMany(UserPayment)
+UserPayment.belongsTo(Card)
+
+Payment.hasMany(UserPayment)
+UserPayment.belongsTo(Payment)
+
+Account.hasMany(FavouritePayment)
+FavouritePayment.belongsTo(Payment)
+
+Payment.hasMany(FavouritePayment)
+FavouritePayment.belongsTo(Payment)
+
 module.exports = {
     Account,
     Person,
@@ -153,5 +192,8 @@ module.exports = {
     Loan,
     LoanType,
     LoanRequest,
-    Payment
+    PaymentsGroup,
+    Payment,
+    UserPayment,
+    FavouritePayment
 }

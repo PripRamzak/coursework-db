@@ -20,7 +20,7 @@ const Cards = observer(() => {
                             <Card.Body>
                                 <Card.Title className='d-flex justify-content-center' style={{ color: 'gray' }}>{type.name}</Card.Title>
                                 <Card.Img className='mt-1' width={300} height={200} src={process.env.REACT_APP_API_URL + type.img} />
-                                <Card.Text className='d-flex justify-content-center'>{type.description}</Card.Text>
+                                <Card.Text className='mt-2'>{type.description}</Card.Text>
                             </Card.Body>
                         </Card>
                     </Col>

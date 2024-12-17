@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Table } from 'react-bootstrap';
-import { fetchPayments } from '../../http/paymentApi';
+import { fetchCardStatement, fetchPayments, fetchUserPayments } from '../../http/paymentApi';
 import { useNavigate } from 'react-router-dom';
 import { REPORT_ROUTE } from '../../utils/consts';
 import ReactPDF, { PDFDownloadLink } from '@react-pdf/renderer';
@@ -8,11 +8,16 @@ import Report from '../Report';
 
 
 function CardStatement({ show, onHide, cardId }) {
-    const [payments, setPayments] = useState([])
-    const downloadRef = useRef(null)
+    const [userPayments, setUserPayments] = useState([])
+
+    const getTimeDate = (timedate) => {
+        let date = new Date(timedate);
+        const year = new Intl.DateTimeFormat('ru', { day: 'numeric', year: 'numeric', month: 'long', hour: 'numeric', minute: 'numeric' }).format(date);
+        return year;
+    }
 
     useEffect(() => {
-        fetchPayments(cardId).then(data => setPayments(data))
+        fetchCardStatement(cardId).then(data => setUserPayments(data))
     }, [show])
 
     return (
@@ -30,22 +35,22 @@ function CardStatement({ show, onHide, cardId }) {
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                            <th>Сумма</th>
-                            <th>Код платежа</th>
+                            <th>Сумма платежа</th>
+                            <th>Название платежа</th>
                             <th>Тип</th>
                             <th>Дата платежа</th>
                             <th>Действие</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {payments.map(payment =>
-                            <tr key={payment.id}>
-                                <td>{payment.amount} BYN</td>
-                                <td>{payment.code}</td>
-                                <td>{payment.type}</td>
-                                <td>{payment.date}</td>
+                        {userPayments.map(userPayment =>
+                            <tr key={userPayment.id}>
+                                <td>{userPayment.amount} BYN</td>
+                                <td>{userPayment.payment.name}</td>
+                                <td>{userPayment.type}</td>
+                                <td>{getTimeDate(userPayment.date)}</td>
                                 <td>
-                                    <PDFDownloadLink className='me-2' document={<Report payment={payment} />} fileName={'payment_' + payment.id +'.pdf'}>
+                                    <PDFDownloadLink className='me-2' document={<Report payment={userPayment} />} fileName={'payment_' + userPayment.id +'.pdf'}>
                                         {({ blob, url, loading, error }) => (loading ? 'Загрузка отчета...' : 'Сохранить в PDF')}
                                     </PDFDownloadLink>
                                 </td>

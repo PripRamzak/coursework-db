@@ -5,10 +5,11 @@ import Activation from './pages/Activation';
 import Cards from './pages/Cards';
 import PersonalAccount from './pages/PersonalAccount';
 import Loans from './pages/Loans';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE } from "./utils/consts";
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE, PAYMENTS_ROUTE } from "./utils/consts";
 import WorkerCards from './pages/WorkerCards';
 import WorkerLoans from './pages/WorkerLoans';
 import WorkerRequests from './pages/WorkerRequests';
+import Payments from './pages/Payments';
 
 export const authRoutes = [
     {
@@ -22,6 +23,10 @@ export const authRoutes = [
     {
         path: PERSONAL_ACCOUNT_ROUTE,
         Component: PersonalAccount
+    },
+    {
+        path: PAYMENTS_ROUTE,
+        Component: Payments
     },
     {
         path: WORKER_ROUTE + REQUESTS_ROUTE,

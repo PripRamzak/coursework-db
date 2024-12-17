@@ -11,8 +11,12 @@ const App = observer(() => {
     const { user } = useContext(Context)
     const [loading, setLoading] = useState(true)
 
+    useEffect(() =>{
+        document.title = "СкруджБанк";
+    })
+
     /*useEffect(() => {
-        check().then(data => {
+        check().then(() => {
             user.setAccount(true)
             user.setIsAuth(true)
         }).finally(() => setLoading(false))

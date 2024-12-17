@@ -2,6 +2,10 @@ import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
 function CardDetails({ show, onHide, card }) {
+
+    if (!card)
+        return;
+
     return (
         <Modal
             show={show}
