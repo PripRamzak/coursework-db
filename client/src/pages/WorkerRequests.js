@@ -1,56 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Container, Table } from 'react-bootstrap';
 import { fetchPersons } from '../http/userApi';
 import { changeCardRequestStatus, createCard, deleteCardRequest, fetchCardRequests, fetchCardTypes } from '../http/cardApi';
 import { changeLoanRequestStatus, createLoan, deleteLoanRequest, fetchLoanRequests, fetchLoanTypes } from '../http/loanApi';
+import { Context } from '..';
 
 function WorkerRequests() {
+    const {account, card, loan} = useContext(Context)
+
     const [persons, setPersons] = useState([])
-    const [cardTypes, setCardTypes] = useState([])
     const [cardRequests, setCardRequests] = useState([])
-    const [loanTypes, setLoanTypes] = useState([])
     const [loanRequests, setLoanRequests] = useState([])
 
-    useEffect(() => {
-        fetchCardRequests().then(data => setCardRequests(data))
-        fetchCardTypes().then(data => setCardTypes(data))
-        fetchLoanRequests().then(data => setLoanRequests(data))
-        fetchLoanTypes().then(data => setLoanTypes(data))
-        fetchPersons().then(data => setPersons(data))
-    }, [])
-
-    console.log(persons)
-    console.log(cardRequests)
-    console.log(loanRequests)
-
-    const getPersonLastName = (personId) => {
+    const getFullName = (personId) => {
         if (persons.length === 0)
             return '';
-        return persons.find((person) => person.id == personId).last_name
+        const person = persons.find((person) => person.id == personId);
+        return person.last_name + ' ' + person.first_name + ' ' + person.middle_name
     }
 
-    const getPersonFirstName = (personId) => {
-        if (persons.length === 0)
-            return '';
-        return persons.find((person) => person.id == personId).first_name
-    }
-
-    const getPersonMiddleName = (personId) => {
-        if (persons.length === 0)
-            return '';
-        return persons.find((person) => person.id == personId).middle_name
+    const getDate = (timedate) => {
+        let date = new Date(timedate);
+        const year = new Intl.DateTimeFormat('ru', { day: 'numeric', year: 'numeric', month: 'long' }).format(date);
+        return year;
     }
 
     const getCardTypeName = (cardTypeId) => {
-        if (cardTypes.length === 0)
+        if (card.types.length === 0)
             return '';
-        return cardTypes.find((type) => type.id == cardTypeId).name
+        return card.types.find((type) => type.id == cardTypeId).name
     }
 
     const getLoanTypeName = (loanTypeId) => {
-        if (loanTypes.length === 0)
+        if (loan.types.length === 0)
             return ''
-        return loanTypes.find((type) => type.id == loanTypeId).name
+        return loan.types.find((type) => type.id == loanTypeId).name
+    }
+
+    const calculatePayment = (amount, years, loanTypeId) => {
+        if (loan.types.length === 0)
+            return ''
+        const annualInterestRate = loan.types.find(type => type.id == loanTypeId).annual_interest_rate
+        const payment = amount * (annualInterestRate / (100 * 12) / (1 - Math.pow((1 + annualInterestRate / (100 * 12)), -1 * years * 12)))
+        return payment.toFixed(2)
     }
 
     const acceptCardRequest = async (requestId, personId, cardTypeId) => {
@@ -61,11 +53,6 @@ function WorkerRequests() {
 
     const declineCardRequest = async (requestId) => {
         await changeCardRequestStatus(requestId, 'Отказано')
-        fetchCardRequests().then(data => setCardRequests(data))
-    }
-
-    const destroyCardRequest = async (requestId) => {
-        await deleteCardRequest(requestId)
         fetchCardRequests().then(data => setCardRequests(data))
     }
 
@@ -80,36 +67,35 @@ function WorkerRequests() {
         fetchLoanRequests().then(data => setLoanRequests(data))
     }
 
-    const destroyLoanRequest = async (requestId) => {
-        await deleteLoanRequest(requestId)
-        fetchLoanRequests().then(data => setCardRequests(data))
-    }
+    useEffect(() => {
+        fetchPersons().then(data => setPersons(data))
+        fetchCardRequests().then(data => setCardRequests(data))
+        fetchLoanRequests().then(data => setLoanRequests(data))
+    }, [])
 
     return (
         <Container>
-            <h2 className='mt-3 d-flex justify-content-center'>Заявки на карты</h2>
+            <h2 className='mt-3 text-center'>Заявки на карты</h2>
             <Table striped bordered hover className='mt-3'>
                 <thead>
                     <tr>
-                        <th>Фамиия клиента</th>
-                        <th>Имя клиента</th>
-                        <th>Отчество клиента</th>
+                        <th>ФИО клиента</th>
                         <th>Карта</th>
                         <th>Дата заявки</th>
                         <th>Статус</th>
-                        <th>Действие</th>
+                        {cardRequests.filter(request => request.personId !== account.personId).find(request => request.status === 'Обрабатывается') &&
+                            <th></th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
-                    {cardRequests.map(request =>
+                    {cardRequests.filter(request => request.personId !== account.personId).map(request =>
                         <tr key={request.id}>
-                            <td>{getPersonLastName(request.personId)}</td>
-                            <td>{getPersonFirstName(request.personId)}</td>
-                            <td>{getPersonMiddleName(request.personId)}</td>
+                            <td>{getFullName(request.personId)}</td>
                             <td>{getCardTypeName(request.cardTypeId)}</td>
-                            <td>{request.date}</td>
+                            <td>{getDate(request.date)}</td>
                             <td>{request.status}</td>
-                            {request.status === 'Обрабатывается' ?
+                            {request.status === 'Обрабатывается' &&
                                 <td width='250'>
                                     <Button variant='outline-danger' onClick={() => declineCardRequest(request.id)}>Отклонить</Button>
                                     <Button className='ms-3'
@@ -118,46 +104,42 @@ function WorkerRequests() {
                                         Одобрить
                                     </Button>
                                 </td>
-                                :
-                                <td>
-                                    <Button variant='outline-danger' onClick={() => destroyCardRequest(request.id)}>Удалить</Button>
-                                </td>
                             }
                         </tr>
                     )}
                 </tbody>
             </Table>
-            <h2 className='mt-3 d-flex justify-content-center'>Заявки на кредиты</h2>
+            <h2 className='mt-3 text-center'>Заявки на кредиты</h2>
             <Table striped bordered hover className='mt-3'>
                 <thead>
                     <tr>
-                        <th>Фамиия клиента</th>
-                        <th>Имя клиента</th>
-                        <th>Отчество клиента</th>
+                        <th>ФИО клиента</th>
                         <th>Кредит</th>
                         <th>Сумма кредита</th>
                         <th>Срок кредита</th>
+                        <th>Ежемесячный платеж</th>
                         <th>Справка о доходах</th>
                         <th>Дата заявки</th>
                         <th>Статус</th>
-                        <th>Действие</th>
+                        {loanRequests.find(request => request.status === 'Обрабатывается') &&
+                            <th></th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
                     {loanRequests.map(request =>
                         <tr key={request.id}>
-                            <td>{getPersonLastName(request.personId)}</td>
-                            <td>{getPersonFirstName(request.personId)}</td>
-                            <td>{getPersonMiddleName(request.personId)}</td>
+                            <td>{getFullName(request.personId)}</td>
                             <td>{getLoanTypeName(request.loanTypeId)}</td>
                             <td>{request.amount}</td>
                             <td>{request.years}</td>
+                            <td>{calculatePayment(request.amount, request.years, request.loanTypeId)}</td>
                             <td>
                                 <Button variant={'light'} href={process.env.REACT_APP_API_URL + request.file_document} target='_blank' rel='noreferrer'>Посмотреть</Button>
                             </td>
-                            <td>{request.date}</td>
+                            <td>{getDate(request.date)}</td>
                             <td>{request.status}</td>
-                            {request.status === 'Обрабатывается' ?
+                            {request.status === 'Обрабатывается' &&
                                 <td width='250'>
                                     <Button variant='outline-danger' onClick={() => declineLoanRequest(request.Id)}>Отклонить</Button>
                                     <Button className='ms-3'
@@ -165,10 +147,6 @@ function WorkerRequests() {
                                         onClick={() => acceptLoanRequest(request.id, request.personId, request.cardTypeId)}>
                                         Одобрить
                                     </Button>
-                                </td>
-                                :
-                                <td>
-                                    <Button variant='outline-danger' onClick={() => destroyLoanRequest(request.id)}>Удалить</Button>
                                 </td>
                             }
                         </tr>

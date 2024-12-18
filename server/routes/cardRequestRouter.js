@@ -8,6 +8,6 @@ router.post('/create', authMiddleware, cardRequestController.create)
 router.post('/change_status', checkRole('WORKER'), cardRequestController.changeStatus)
 router.get('/', authMiddleware, cardRequestController.getAll)
 router.get('/table/export', checkRole('ADMIN'), cardRequestController.export)
-router.delete('/:id', checkRole('WORKER'), cardRequestController.deleteOne)
+router.delete('/:id', authMiddleware, cardRequestController.deleteOne)
 
 module.exports = router

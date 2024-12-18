@@ -42,29 +42,14 @@ const PersonCard = observer(() => {
         return process.env.REACT_APP_API_URL + card.types.find((type) => type.id === cardTypeId).img
     }
 
-    const payLoanPayment = async (loan, cardId) => {
-        if (card.id) {
-            try {
-                await createPayment(loan.payment, '5129', cardId)
-            }
-            catch (e) {
-                setAlert(true)
-                return
-            }
-
-            await payLoan(loan.id)
-            fetchCards(account.personId).then(data => card.setUserCards(data))
-        }
-    }
-
     return (
         <React.Fragment>
             {card.userCards.length === 0 ?
-                <div className='mt-2'>
-                    <h3 style={{ color: 'gray' }}>У вас нет карт</h3>
-                    <Image className='mt-2' width={200} height={200} src={noCard} />
-                    <Button className='mt-3 d-flex' variant='outline-dark' onClick={() => setCardRequestVisible(true)}>Оформить</Button>
-                    <CreateCardRequest show={cardRequestVisible} onHide={() => setCardRequestVisible(false)} personId={account.personId} />
+                <div className='mt-2 d-flex flex-column align-items-center'>
+                    <h2 style={{ color: 'gray' }}>У вас нет карт</h2>
+                    <Image className='mt-2' width={300} height={300} src={noCard} />
+                    <Button className='mt-4' variant='outline-dark' style={{width: '100%'}} onClick={() => setCardRequestVisible(true)}>Оформить</Button>
+                    <CreateCardRequest show={cardRequestVisible} onHide={() => setCardRequestVisible(false)} />
                 </div>
                 :
                 <Row className='mt-4'>

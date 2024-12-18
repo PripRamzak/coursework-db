@@ -8,38 +8,16 @@ import { fetchPayments } from '../http/paymentApi';
 
 const WorkerCards = observer(() => {
     const { card } = useContext(Context)
+
     const [persons, setPersons] = useState([])
-    const [payments, setPayments] = useState([])
     const [cardCount, setCardCount] = useState([])
     const [selectedType, setSelectedType] = useState({})
 
-    useEffect(() => {
-        fetchPersons().then(data => setPersons(data))
-        fetchPayments().then(data => setPayments(data))
-        fetchCardsCount().then(data => setCardCount(data))
-        fetchCardTypes().then(data => card.setTypes(data))
-    }, [])
-
-    useEffect(() => {
-        fetchCards(null, selectedType.id).then(data => card.setUserCards(data))
-    }, [selectedType])
-
-    const getPersonLastName = (personId) => {
+    const getFullName = (personId) => {
         if (persons.length === 0)
             return '';
-        return persons.find((person) => person.id == personId).last_name
-    }
-
-    const getPersonFirstName = (personId) => {
-        if (persons.length === 0)
-            return '';
-        return persons.find((person) => person.id == personId).first_name
-    }
-
-    const getPersonMiddleName = (personId) => {
-        if (persons.length === 0)
-            return '';
-        return persons.find((person) => person.id == personId).middle_name
+        const person = persons.find((person) => person.id == personId);
+        return person.last_name + ' ' + person.first_name + ' ' + person.middle_name
     }
 
     const getCardTypeName = (cardTypeId) => {
@@ -48,27 +26,21 @@ const WorkerCards = observer(() => {
         return card.types.find((type) => type.id == cardTypeId).name
     }
 
-    const getAmountOfCharges = (cardId) => {
-        let amount = 0
-        for (let i = 0; i < payments.length; i++) {
-            if (payments[i].cardId == cardId && payments[i].type == 'Зачисление') {
-                amount += payments[i].amount
-            }
-        }
-
-        return amount
+    const handleSelectType = (type) => {
+        if (type.id === selectedType.id)
+            setSelectedType({})
+        else
+            setSelectedType(type)
     }
 
-    const getAmountOfPayments = (cardId) => {
-        let amount = 0
-        for (let i = 0; i < payments.length; i++) {
-            if (payments[i].cardId == cardId && payments[i].type == 'Оплата') {
-                amount += payments[i].amount
-            }
-        }
+    useEffect(() => {
+        fetchPersons().then(data => setPersons(data))
+        fetchCardsCount().then(data => setCardCount(data))
+    }, [])
 
-        return amount
-    }
+    useEffect(() => {
+        fetchCards(null, selectedType.id).then(data => card.setUserCards(data))
+    }, [selectedType])
 
     return (
         <Container>
@@ -79,7 +51,7 @@ const WorkerCards = observer(() => {
                         <Card
                             style={{ cursor: 'pointer' }}
                             className="text-center p-2"
-                            onClick={() => setSelectedType(type)}
+                            onClick={() => handleSelectType(type)}
                             border={type.id === selectedType.id ? 'dark' : 'gray'}>
                             {type.name}
                         </Card>
@@ -89,30 +61,22 @@ const WorkerCards = observer(() => {
             <Table striped bordered hover className='mt-3'>
                 <thead>
                     <tr>
-                        <th>Фамиия клиента</th>
-                        <th>Имя клиента</th>
-                        <th>Отчество клиента</th>
+                        <th>ФИО клиента</th>
                         <th>Карта</th>
                         <th>Номер карты</th>
-                        <th>Сумма зачислений</th>
-                        <th>Сумма платежей</th>
                     </tr>
                 </thead>
                 <tbody>
                     {card.userCards.map(card =>
                         <tr key={card.id}>
-                            <td>{getPersonLastName(card.personId)}</td>
-                            <td>{getPersonFirstName(card.personId)}</td>
-                            <td>{getPersonMiddleName(card.personId)}</td>
+                            <td>{getFullName(card.personId)}</td>
                             <td>{getCardTypeName(card.cardTypeId)}</td>
-                            <td>{card.number}</td>
-                            <td>{getAmountOfCharges(card.id)}</td>
-                            <td>{getAmountOfPayments(card.id)}</td>
+                            <td>{card.number.replace(/(\d{4})(?=\d)/g, '$1 ')}</td>
                         </tr>
                     )}
                 </tbody>
             </Table>
-            <h2 className='mt-5 text-center'>Карты</h2>
+            <h3 className='mt-2 text-center'>Статистика</h3>
             <Table striped bordered hover className='mt-3'>
                 <thead>
                     <tr>

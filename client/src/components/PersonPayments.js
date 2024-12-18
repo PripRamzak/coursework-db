@@ -12,7 +12,7 @@ import SuccessfulPayment from './modals/SuccessfulPayment';
 const PersonPayments = observer(() => {
     const navigate = useNavigate();
 
-    const { account } = useContext(Context)
+    const { account, card } = useContext(Context)
     const [favouritePayments, setFavouritePayments] = useState([])
 
     const [paymentModalVisible, setPaymentModalVisible] = useState(false)
@@ -28,8 +28,8 @@ const PersonPayments = observer(() => {
             fetchFavoutirePayments(account.id).then(data => setFavouritePayments(data))
     }, [account])
 
-    console.log(favouritePayments)
-    console.log(favouritePayments.length)
+    if (card.userCards.length === 0)
+        return <></>
 
     return (
         <React.Fragment>

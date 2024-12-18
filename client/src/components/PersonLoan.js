@@ -6,7 +6,7 @@ import CreateLoanRequest from './modals/CreateLoanRequest';
 import LoanPayment from './modals/LoanPayment';
 
 const PersonLoan = observer(() => {
-    const { account, loan } = useContext(Context)
+    const { loan, card } = useContext(Context)
 
     const [loanRequestVisible, setLoanRequestVisible] = useState(false)
     const [loanPaymentVisible, setLoanPaymentVisible] = useState(false)
@@ -23,6 +23,12 @@ const PersonLoan = observer(() => {
         return loan.types.find(type => type.id === loanTypeId).img
     }
 
+    const getDate = (timedate) => {
+        let date = new Date(timedate);
+        const year = new Intl.DateTimeFormat('ru', { year: 'numeric', month: 'long' }).format(date);
+        return year;
+    }
+
     return (
         <React.Fragment>
             <h1 className='mt-2 text-center'>
@@ -31,7 +37,11 @@ const PersonLoan = observer(() => {
             {loan.userLoans.length === 0 ?
                 <div className='d-flex flex-column text-center mt-2'>
                     <h3 style={{ color: 'gray' }}>У вас нет кредитов</h3>
-                    <Button className='mt-2 d-flex' variant='outline-dark' onClick={() => setLoanRequestVisible(true)}>Оформить</Button>
+                    {card.userCards.length > 0 ?
+                        <Button className='mt-2 d-flex' variant='outline-dark' onClick={() => setLoanRequestVisible(true)}>Оформить</Button>
+                        :
+                        <h4 style={{ color: 'gray' }}>Чтобы оформить кредит, сначала оформите карту</h4>
+                    }
                     <CreateLoanRequest show={loanRequestVisible} onHide={() => setLoanRequestVisible(false)} />
                 </div>
                 :
@@ -49,13 +59,16 @@ const PersonLoan = observer(() => {
                                 <Col className='ms-4 ' md={6}>
                                     <Row className='text-center'>
                                         <Card.Text className='mb-0' style={{ fontSize: '1.35rem' }}>
-                                            <span className='fw-bold'>Дата окончания кредита:</span> {loan.userLoans[0].date}
+                                            <span className='fw-bold'>Дата окончания кредита:</span> {getDate(loan.userLoans[0].expire_date)}
+                                        </Card.Text>
+                                        <Card.Text className='mb-0' style={{ fontSize: '1.35rem' }}>
+                                            <span className='fw-bold'>Оставшаяся сумма кредита:</span> {loan.userLoans[0].amount.toFixed(2)} BYN
                                         </Card.Text>
                                         <Card.Text className='mb-5' style={{ fontSize: '1.35rem' }}>
-                                            <span className='fw-bold'>Оставшаяся сумма кредита:</span> {loan.userLoans[0].amount.toFixed(2)}
+                                            <span className='fw-bold'>Ежемесячный платеж:</span> {loan.userLoans[0].payment.toFixed(2)} BYN
                                         </Card.Text>
                                     </Row>
-                                    <Row className='ms-2 d-flex justify-content-center align-items-end' style={{ height: '55%' }}>
+                                    <Row className='ms-2 d-flex justify-content-center align-items-end' style={{ height: '45%' }}>
                                         <Button variant='outline-dark' onClick={() => setLoanPaymentVisible(true)}>
                                             Оплатить кредит
                                         </Button>

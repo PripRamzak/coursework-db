@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { Context } from '..';
-import { fetchCards, fetchCardRequests, fetchCardTypes } from '../http/cardApi';
+import { fetchCards, fetchCardRequests, fetchCardTypes, deleteCardRequest } from '../http/cardApi';
 import { observer } from 'mobx-react-lite';
 
 const PersonCardRequest = observer(() => {
-    const { card } = useContext(Context)
+    const { account, card } = useContext(Context)
 
     const getCardTypeName = (cardTypeId) => {
         if (card.types.length == 0)
@@ -13,34 +13,51 @@ const PersonCardRequest = observer(() => {
         return card.types.find((type) => type.id == cardTypeId).name
     }
 
+    const getTimeDate = (timedate) => {
+        let date = new Date(timedate);
+        const year = new Intl.DateTimeFormat('ru', { day: 'numeric', year: 'numeric', month: 'long' }).format(date);
+        return year;
+    }
+
+    const destroyCardRequest = async (requestId) => {
+        await deleteCardRequest(requestId)
+        fetchCardRequests(account.personId).then(data => card.setUserRequests(data))
+    }
+
     return (
         <React.Fragment>
-            <h1 className='mt-2 text-center'>
-                Заявки на карты
-            </h1>
-            {card.userRequests.length === 0 ?
-                <div className='mt-2'>
-                    <h3 style={{ color: 'gray' }}>У вас нет заявок</h3>
-                </div>
-                :
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th>Карта</th>
-                            <th>Дата заявки</th>
-                            <th>Статус</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {card.userRequests.map(request =>
-                            <tr key={request.id}>
-                                <td>{getCardTypeName(request.cardTypeId)}</td>
-                                <td>{request.date}</td>
-                                <td>{request.status}</td>
+            {card.userRequests.length > 0 &&
+                <>
+                    <h1 className='mt-2 text-center'>
+                        Заявки на карты
+                    </h1>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Карта</th>
+                                <th>Дата заявки</th>
+                                <th>Статус</th>
+                                {card.userRequests.find(request => request.status !== 'Обрабатывается') &&
+                                    <th></th>
+                                }
                             </tr>
-                        )}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {card.userRequests.map(request =>
+                                <tr key={request.id}>
+                                    <td>{getCardTypeName(request.cardTypeId)}</td>
+                                    <td>{getTimeDate(request.date)}</td>
+                                    <td>{request.status}</td>
+                                    {request.status !== 'Обрабатывается' &&
+                                        <td className='d-flex justify-content-center'>
+                                            <Button variant='outline-success' onClick={() => destroyCardRequest(request.id)}>OK</Button>
+                                        </td>
+                                    }
+                                </tr>
+                            )}
+                        </tbody>
+                    </Table>
+                </>
             }
         </React.Fragment>
     );

@@ -3,8 +3,8 @@ import { Alert, Button, Dropdown, Modal } from 'react-bootstrap';
 import { createCardRequest, fetchCardRequests, fetchCardTypes } from '../../http/cardApi';
 import { Context } from '../..';
 
-function CreateCardRequest({ show, onHide, personId }) {
-    const { card } = useContext(Context)
+function CreateCardRequest({ show, onHide }) {
+    const { account, card } = useContext(Context)
     const [typeId, setTypeId] = useState(0)
     const [type, setType] = useState('')
     const [alert, setAlert] = useState(false)
@@ -19,7 +19,8 @@ function CreateCardRequest({ show, onHide, personId }) {
             return
         }
 
-        createCardRequest(personId, typeId).then(data => {
+        createCardRequest(account.personId, typeId).then(() => {
+            fetchCardRequests(account.personId).then(data => card.setUserRequests(data))
             setTypeId('')
             onHide()
         })
