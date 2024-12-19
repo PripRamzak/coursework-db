@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { Context } from '../index';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE, PAYMENTS_ROUTE, USRES_ROUTE } from '../utils/consts';
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, PAYMENTS_ROUTE, USRES_ROUTE, PRODUCT_REQUESTS_ROUTE, ACTIVATION_REQUESTS_ROUTE } from '../utils/consts';
 import { observer } from 'mobx-react-lite';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
@@ -50,21 +50,24 @@ const NavBar = observer(() => {
                                 <Dropdown.Toggle className='me-2' variant='light'>
                                     Панель сотрудника
                                     <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => navigate(WORKER_ROUTE + REQUESTS_ROUTE)}>Заявки</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => navigate(WORKER_ROUTE + ACTIVATION_REQUESTS_ROUTE)}>Запросы на активацию</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => navigate(WORKER_ROUTE + PRODUCT_REQUESTS_ROUTE)}>Заявки</Dropdown.Item>
                                         <Dropdown.Item onClick={() => navigate(WORKER_ROUTE + CARDS_ROUTE)}>Карты</Dropdown.Item>
                                         <Dropdown.Item onClick={() => navigate(WORKER_ROUTE + LOANS_ROUTE)}>Кредиты</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown.Toggle>
                             </Dropdown>
                         }
-                        {account.status == 'Не активирован' &&
+                        {account.status == 'Не активирован' && !account.activationRequest &&
                             <Button variant='light' className="me-2" onClick={() => navigate(ACTIVATION_ROUTE)}>Активировать аккаунт</Button>
                         }
                         <Dropdown>
                             <Dropdown.Toggle variant='light'>
                                 Интернет-банкинг
                                 <Dropdown.Menu>
-                                    <Dropdown.Item onClick={() => navigate(PERSONAL_ACCOUNT_ROUTE)}>Личный кабинет</Dropdown.Item>
+                                    {account.status != 'Не активирован' &&
+                                        <Dropdown.Item onClick={() => navigate(PERSONAL_ACCOUNT_ROUTE)}>Личный кабинет</Dropdown.Item>
+                                    }
                                     <Dropdown.Item onClick={() => logOut()}>Выйти</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown.Toggle>

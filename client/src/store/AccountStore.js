@@ -4,6 +4,7 @@ export default class AccountStore {
     constructor() {
         this._isAuth = false
         this._account = {}
+        this._activationRequest = null
         makeAutoObservable(this)
     }
 
@@ -13,6 +14,10 @@ export default class AccountStore {
 
     setAccount(account) {
         this._account = account
+    }
+
+    setActivationRequest(request) {
+        this._activationRequest = request
     }
 
     get isAuth() {
@@ -33,5 +38,9 @@ export default class AccountStore {
 
     get status() {
         return this._account.status
+    }
+
+    get activationRequest() {
+        return this._activationRequest
     }
 }

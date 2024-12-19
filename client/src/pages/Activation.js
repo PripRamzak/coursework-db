@@ -1,30 +1,30 @@
 import React, { useContext, useState } from 'react';
-import { Button, Card, Container, Dropdown, Form } from 'react-bootstrap';
+import { Alert, Button, Card, Container, Dropdown, Form } from 'react-bootstrap';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Context } from '..';
-import { activation, createPerson } from '../http/userApi';
+import { activation, createActivationRequest, createPerson } from '../http/userApi';
 import { observer } from 'mobx-react-lite';
 import { BANK_ROUTE } from '../utils/consts';
 const Activation = observer(() => {
     const { account } = useContext(Context)
     const navigate = useNavigate()
+
     const [lastName, setLastName] = useState('')
     const [firstName, setFirstName] = useState('')
     const [middleName, setMiddleName] = useState('')
     const [identNumber, setIdentNumber] = useState('')
     const [birthDate, setBirthDate] = useState('')
     const [sex, setSex] = useState('')
+    const [alert, setAlert] = useState('')
 
 
     const click = async () => {
         try {
-            const person = await createPerson(lastName, firstName, middleName, identNumber, birthDate, sex)
-            const data = await activation(account.id, person.id)
-            account.setAccount(data)
+            createActivationRequest(lastName, firstName, middleName, identNumber, birthDate, sex, account.id).then(data => account.setActivationRequest(data))
             navigate(BANK_ROUTE)
         }
         catch (e) {
-            alert(e.responce.data.message)
+            setAlert(e.response.data.message)
         }
     }
 
@@ -47,6 +47,9 @@ const Activation = observer(() => {
                     </Dropdown>
                     <Button className='mt-3' variant='success' onClick={click}>Активировать</Button>
                 </Form>
+                {alert &&
+                    <Alert className='mt-3 p-1 text-center' variant='danger'>{alert}</Alert>
+                }
             </Card>
         </Container>
     );

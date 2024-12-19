@@ -4,15 +4,16 @@ import Activation from './pages/Activation';
 import Cards from './pages/Cards';
 import PersonalAccount from './pages/PersonalAccount';
 import Loans from './pages/Loans';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE, PAYMENTS_ROUTE, USRES_ROUTE } from "./utils/consts";
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, PAYMENTS_ROUTE, USRES_ROUTE, PRODUCT_REQUESTS_ROUTE, ACTIVATION_REQUESTS_ROUTE } from "./utils/consts";
 import WorkerCards from './pages/WorkerCards';
 import WorkerLoans from './pages/WorkerLoans';
-import WorkerRequests from './pages/WorkerRequests';
 import Payments from './pages/Payments';
 import AdminPayments from './pages/AdminPayments';
 import AdminUsers from './pages/AdminUsers';
 import AdminCards from './pages/AdminCards';
 import AdminLoans from './pages/AdminLoans';
+import WorkerProductRequests from './pages/WorkerProductRequests';
+import WorkerActivationRequests from './pages/WorkerActivationRequests';
 
 export const adminRoutes = [
     {
@@ -35,8 +36,12 @@ export const adminRoutes = [
 
 export const workerRoutes = [
     {
-        path: WORKER_ROUTE + REQUESTS_ROUTE,
-        Component: WorkerRequests
+        path: WORKER_ROUTE + PRODUCT_REQUESTS_ROUTE,
+        Component: WorkerProductRequests
+    },
+    {
+        path: WORKER_ROUTE + ACTIVATION_REQUESTS_ROUTE,
+        Component: WorkerActivationRequests
     },
     {
         path: WORKER_ROUTE + CARDS_ROUTE,

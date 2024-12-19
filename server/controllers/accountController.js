@@ -1,6 +1,7 @@
 const ApiError = require('../error/apiError')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const validator = require('validator')
 const sequelize = require('../db')
 const { Account, Person } = require('../models/models')
 
@@ -13,6 +14,9 @@ class AccountController {
         const { email, password, role } = req.body
         if (!email || !password) {
             return next(ApiError.badRequest('Incorrect email or password'))
+        }
+        else if (!validator.isEmail(email)) {
+            return next(ApiError.badRequest('Incorrect email'))
         }
 
         const candidate = await Account.findOne({ where: { email } })
@@ -29,6 +33,11 @@ class AccountController {
 
     async login(req, res, next) {
         const { email, password } = req.body
+
+        if (!validator.isEmail(email)) {
+            return next(ApiError.badRequest('Incorrect email'))
+        }
+
         const account = await Account.findOne({ where: { email } })
         if (!account) {
             return next(ApiError.badRequest('Incorrect email or password'))
@@ -68,7 +77,7 @@ class AccountController {
 
     async changeRole(req, res) {
         const { id, role } = req.body
-        
+
         const account = await Account.findOne({ where: { id } })
         account.role = role
         await account.save()

@@ -46,8 +46,33 @@ export const check = async () => {
     return jwtDecode(data.token)
 }
 
-export const createPerson = async (last_name, first_name, middle_name, ident_number, birth, sex) => {
-    const { data } = await $authHost.post('api/person', { last_name, first_name, middle_name, ident_number, birth, sex })
+export const createActivationRequest = async (last_name, first_name, middle_name, ident_number, birth, sex, accountId) => {
+    const { data } = await $authHost.post('api/activation_request', { last_name, first_name, middle_name, ident_number, birth, sex, accountId })
+    return data
+}
+
+export const fetchActivationRequests = async () => {
+    const { data } = await $authHost.get('api/activation_request')
+    return data
+}
+
+export const changeActivationRequestStatus = async (activationRequestId, newStatus) => {
+    const { data } = await $authHost.put('api/activation_request', { activationRequestId, newStatus })
+    return data
+}
+
+export const fetchActivationRequest = async (id) => {
+    const { data } = await $authHost.get('api/activation_request/' + id)
+    return data
+}
+
+export const deleteActivationRequest = async (id) => {
+    const { data } = await $authHost.delete('api/activation_request/' + id)
+    return data
+}
+
+export const createPerson = async (request) => {
+    const { data } = await $authHost.post('api/person', { request })
     return data
 }
 

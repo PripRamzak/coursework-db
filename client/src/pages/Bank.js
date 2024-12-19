@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Container, Row, Col, Image, Carousel } from 'react-bootstrap';
 import { observer } from 'mobx-react-lite';
 import { Context } from '..';
@@ -6,14 +6,26 @@ import mcDuck from '../assets/mc-duck.png';
 import cardImage from '../assets/card_prev.png'
 import { fetchCardTypes } from '../http/cardApi';
 import { fetchLoanTypes } from '../http/loanApi';
+import ActivationNotification from '../components/modals/ActivationNotification';
 
-const Shop = observer(() => {
-    const {card, loan} = useContext(Context)
+const Bank = observer(() => {
+    const { account, card, loan } = useContext(Context)
+
+    const [notificationVisible, setNotificationVisible] = useState(false)
 
     useEffect(() => {
         fetchCardTypes().then(data => card.setTypes(data))
         fetchLoanTypes().then(data => loan.setTypes(data))
     }, [])
+
+    useEffect(() => {
+        if (account.activationRequest)
+            if (account.activationRequest.status != 'Обрабатывается')
+            {
+                console.log(true)
+                setNotificationVisible(true)
+            }
+    }, [account.activationRequest])
 
     /*useEffect(() => {
         fetchTypes().then(data => device.setTypes(data))
@@ -58,20 +70,9 @@ const Shop = observer(() => {
                     </Carousel.Caption>
                 </Carousel.Item>
             </Carousel>
-
-            {/*
-            <Row className="mt-2">
-                <Col md={3}>
-                    <TypeBar />
-                </Col>
-                <Col md={9}>
-                    <BrandBar />
-                    <DeviceList />
-                    <Pages />
-                </Col>
-    </Row> */}
+            <ActivationNotification show={notificationVisible} onHide={() => setNotificationVisible(false)} />
         </Container >
     );
 })
 
-export default Shop;
+export default Bank;

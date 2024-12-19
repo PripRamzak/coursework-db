@@ -5,7 +5,7 @@ import { changeCardRequestStatus, createCard, deleteCardRequest, fetchCardReques
 import { changeLoanRequestStatus, createLoan, deleteLoanRequest, fetchLoanRequests, fetchLoanTypes } from '../http/loanApi';
 import { Context } from '..';
 
-function WorkerRequests() {
+function WorkerProductRequests() {
     const {account, card, loan} = useContext(Context)
 
     const [persons, setPersons] = useState([])
@@ -157,4 +157,4 @@ function WorkerRequests() {
     );
 }
 
-export default WorkerRequests;
+export default WorkerProductRequests;

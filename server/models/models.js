@@ -27,6 +27,21 @@ const Person = sequelize.define('persons',
         freezeTableName: true
     })
 
+const ActivationRequest = sequelize.define('activation_requests',
+    {
+        id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+        last_name: { type: DataTypes.STRING, allowNull: false },
+        first_name: { type: DataTypes.STRING, allowNull: false },
+        middle_name: { type: DataTypes.STRING, allowNull: false },
+        ident_number: { type: DataTypes.STRING, unique: true, allowNull: false },
+        birth: { type: DataTypes.DATEONLY, allowNull: false },
+        sex: { type: DataTypes.STRING, allowNull: false },
+        status: { type: DataTypes.ENUM('Обрабатывается', 'Одобрено', 'Отказано'), defaultValue: 'Обрабатывается' }
+    },
+    {
+        freezeTableName: true
+    })
+
 const Card = sequelize.define('cards',
     {
         id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -144,6 +159,9 @@ const FavouritePayment = sequelize.define('favourite_payments',
 Person.hasOne(Account)
 Account.belongsTo(Person)
 
+Account.hasOne(ActivationRequest)
+ActivationRequest.belongsTo(Account)
+
 Person.hasMany(Card)
 Card.belongsTo(Person)
 
@@ -189,6 +207,7 @@ FavouritePayment.belongsTo(Payment)
 module.exports = {
     Account,
     Person,
+    ActivationRequest,
     Card,
     CardType,
     CardRequest,

@@ -4,11 +4,13 @@ const ApiError = require('../error/apiError')
 
 class PersonController {
     async create(req, res, next) {
-        const { last_name, first_name, middle_name, ident_number, birth, sex } = req.body
-        if (!last_name || !first_name || !middle_name || !ident_number || !birth || !sex) {
-            return next(ApiError.badRequest('Incorrect personal data'))
-        }
-        const person = await Person.create({ last_name, first_name, middle_name, ident_number, birth, sex })
+        const { request } = req.body
+
+        const person = await Person.create({
+            last_name: request.last_name, first_name: request.first_name, middle_name: request.middle_name,
+            ident_number: request.ident_number, birth: request.birth, sex: request.sex
+        })
+
         return res.json(person)
     }
 
@@ -29,7 +31,7 @@ class PersonController {
             mapToModel: true
         })
 
-        return res.json({message: 'Export successed'})
+        return res.json({ message: 'Export successed' })
     }
 }
 

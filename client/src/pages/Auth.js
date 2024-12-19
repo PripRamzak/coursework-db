@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE } from '../utils/consts';
-import { login, registration } from '../http/userApi';
+import { fetchActivationRequest, login, registration } from '../http/userApi';
 import { Context } from '..';
 import { observer } from 'mobx-react-lite';
 
@@ -27,10 +27,11 @@ const Auth = observer(() => {
                 data = await registration(email, password);
             }
 
-            console.log(data)
-
             account.setAccount(data)
             account.setIsAuth(true)
+
+            fetchActivationRequest(account.id).then(data => account.setActivationRequest(data))
+
             navigate(BANK_ROUTE)
         }
         catch (e) {
