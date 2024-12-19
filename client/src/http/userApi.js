@@ -40,12 +40,6 @@ export const exportAccounts = async () => {
     return data
 }
 
-export const check = async () => {
-    const { data } = await $authHost.get('api/account/auth')
-    localStorage.setItem('token', data.token)
-    return jwtDecode(data.token)
-}
-
 export const createActivationRequest = async (last_name, first_name, middle_name, ident_number, birth, sex, accountId) => {
     const { data } = await $authHost.post('api/activation_request', { last_name, first_name, middle_name, ident_number, birth, sex, accountId })
     return data

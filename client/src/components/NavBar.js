@@ -14,6 +14,8 @@ const NavBar = observer(() => {
     const navigate = useNavigate()
 
     const logOut = () => {
+        localStorage.removeItem('token')
+        
         account.setAccount({})
         account.setIsAuth(false)
 

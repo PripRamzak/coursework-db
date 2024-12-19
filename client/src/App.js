@@ -4,27 +4,33 @@ import AppRouter from './components/AppRouter';
 import NavBar from './components/NavBar';
 import { observer } from 'mobx-react-lite';
 import { Context } from '.';
-import { check } from './http/userApi';
 import { Spinner } from 'react-bootstrap';
+import { jwtDecode } from 'jwt-decode';
+import { fetchCardTypes } from './http/cardApi';
+import { fetchLoanTypes } from './http/loanApi';
 
 const App = observer(() => {
-    const { user } = useContext(Context)
+    const { account, card, loan } = useContext(Context)
     const [loading, setLoading] = useState(true)
 
-    useEffect(() =>{
+    useEffect(() => {
         document.title = "СкруджБанк";
     })
 
-    /*useEffect(() => {
-        check().then(() => {
-            user.setAccount(true)
-            user.setIsAuth(true)
-        }).finally(() => setLoading(false))
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (token) {
+            account.setAccount(jwtDecode(token))
+            account.setIsAuth(true)
+        }
+        fetchCardTypes().then(data => card.setTypes(data))
+        fetchLoanTypes().then(data => loan.setTypes(data))
+        setLoading(false)
     }, [])
 
     if (loading) {
         return <Spinner animation={"grow"} />
-    }*/
+    }
 
     return (
         <BrowserRouter>

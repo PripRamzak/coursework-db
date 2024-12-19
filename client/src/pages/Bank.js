@@ -4,45 +4,20 @@ import { observer } from 'mobx-react-lite';
 import { Context } from '..';
 import mcDuck from '../assets/mc-duck.png';
 import cardImage from '../assets/card_prev.png'
-import { fetchCardTypes } from '../http/cardApi';
-import { fetchLoanTypes } from '../http/loanApi';
 import ActivationNotification from '../components/modals/ActivationNotification';
 
 const Bank = observer(() => {
-    const { account, card, loan } = useContext(Context)
+    const { account } = useContext(Context)
 
     const [notificationVisible, setNotificationVisible] = useState(false)
 
     useEffect(() => {
-        fetchCardTypes().then(data => card.setTypes(data))
-        fetchLoanTypes().then(data => loan.setTypes(data))
-    }, [])
-
-    useEffect(() => {
         if (account.activationRequest)
-            if (account.activationRequest.status != 'Обрабатывается')
-            {
+            if (account.activationRequest.status != 'Обрабатывается') {
                 console.log(true)
                 setNotificationVisible(true)
             }
     }, [account.activationRequest])
-
-    /*useEffect(() => {
-        fetchTypes().then(data => device.setTypes(data))
-        fetchBrands().then(data => device.setBrands(data))
-        fetchDevices(null, null, 1, 4).then(data => {
-            device.setDevices(data.rows)
-            device.setTotalCount(data.count)
-        })
-    }, [])
-
-    useEffect(() => {
-        fetchDevices(device.selectedType.id, device.selectedBrand.id, device.page, 4).then(data => {
-            device.setDevices(data.rows)
-            device.setTotalCount(data.count)
-        })
-    }, [device.page, device.selectedType, device.selectedBrand]
-    )*/
 
     return (
         <Container>

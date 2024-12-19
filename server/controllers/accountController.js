@@ -85,11 +85,6 @@ class AccountController {
         return res.json(account)
     }
 
-    async check(req, res, next) {
-        const token = generateJwt(req.account.id, req.account.email, req.account.role)
-        return res.json({ token })
-    }
-
     async export(req, res) {
         await sequelize.query("COPY accounts TO '/tmp/accounts.csv' DELIMITER ',' CSV HEADER", {
             model: Account,
