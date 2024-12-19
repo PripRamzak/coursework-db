@@ -1,33 +1,39 @@
-import Admin from './pages/Admin';
 import Auth from './pages/Auth';
 import Bank from './pages/Bank';
 import Activation from './pages/Activation';
 import Cards from './pages/Cards';
 import PersonalAccount from './pages/PersonalAccount';
 import Loans from './pages/Loans';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE, PAYMENTS_ROUTE } from "./utils/consts";
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE, PAYMENTS_ROUTE, USRES_ROUTE } from "./utils/consts";
 import WorkerCards from './pages/WorkerCards';
 import WorkerLoans from './pages/WorkerLoans';
 import WorkerRequests from './pages/WorkerRequests';
 import Payments from './pages/Payments';
+import AdminPayments from './pages/AdminPayments';
+import AdminUsers from './pages/AdminUsers';
+import AdminCards from './pages/AdminCards';
+import AdminLoans from './pages/AdminLoans';
 
-export const authRoutes = [
+export const adminRoutes = [
     {
-        path: ADMIN_ROUTE,
-        Component: Admin
+        path: ADMIN_ROUTE + PAYMENTS_ROUTE,
+        Component: AdminPayments
     },
     {
-        path: ACTIVATION_ROUTE,
-        Component: Activation
+        path: ADMIN_ROUTE + USRES_ROUTE,
+        Component: AdminUsers
     },
     {
-        path: PERSONAL_ACCOUNT_ROUTE,
-        Component: PersonalAccount
+        path: ADMIN_ROUTE + CARDS_ROUTE,
+        Component: AdminCards
     },
     {
-        path: PAYMENTS_ROUTE,
-        Component: Payments
-    },
+        path: ADMIN_ROUTE + LOANS_ROUTE,
+        Component: AdminLoans
+    }
+]
+
+export const workerRoutes = [
     {
         path: WORKER_ROUTE + REQUESTS_ROUTE,
         Component: WorkerRequests
@@ -39,6 +45,21 @@ export const authRoutes = [
     {
         path: WORKER_ROUTE + LOANS_ROUTE,
         Component: WorkerLoans
+    }
+]
+
+export const authRoutes = [
+    {
+        path: ACTIVATION_ROUTE,
+        Component: Activation
+    },
+    {
+        path: PERSONAL_ACCOUNT_ROUTE,
+        Component: PersonalAccount
+    },
+    {
+        path: PAYMENTS_ROUTE,
+        Component: Payments
     }
 ]
 

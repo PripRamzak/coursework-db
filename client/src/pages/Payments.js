@@ -43,7 +43,7 @@ const Payments = observer(() => {
 
     return (
         <Container>
-            <h1>Платежи</h1>
+            <h1 className='text-center'>Платежи</h1>
             {paymentsGroups.map((paymentsGroup, index) =>
                 <Row className='mt-2' key={index} onClick={() => changePaymentsGroup(paymentsGroup)}>
                     <Card className='d-flex justify-content-center'
@@ -82,7 +82,8 @@ const Payments = observer(() => {
                 </Card>
             </Row>
             <CreateUserPayment show={paymentModalVisible}
-                onHide={() => { setPaymentModalVisible(false); setSuccessfulPaymentVisible(true) }}
+                onHide={() => setPaymentModalVisible(false)}
+                onOk={() => { setPaymentModalVisible(false); setSuccessfulPaymentVisible(true) }}
                 payment={selectedPayment} />
             <SuccessfulPayment show={SuccessfulPaymentVisible}
                 onHide={() => setSuccessfulPaymentVisible(false)}

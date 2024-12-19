@@ -15,13 +15,13 @@ export const createUserPayment = async (amount, payemntData, cardId, paymentId) 
     return data
 }
 
-export const createMoneyTransfer = async(senderCardId, receiverCardNumber, amount) => {
-    const {data} = await $authHost.post('api/user_payment/transfer', {senderCardId, receiverCardNumber, amount})
+export const createMoneyTransfer = async (senderCardId, receiverCardNumber, amount) => {
+    const { data } = await $authHost.post('api/user_payment/transfer', { senderCardId, receiverCardNumber, amount })
     return data
 }
 
-export const createLoanPaymment = async(cardId, loanId, amount) => {
-    const {data} = await $authHost.post('api/user_payment/pay_loan', {cardId, loanId, amount})
+export const createLoanPaymment = async (cardId, loanId, amount) => {
+    const { data } = await $authHost.post('api/user_payment/pay_loan', { cardId, loanId, amount })
     return data
 }
 
@@ -31,7 +31,6 @@ export const createFavouritePayment = async (accountId, paymentId) => {
 }
 
 export const fetchPaymentsGroup = async (parentId) => {
-    console.log(parentId);
     const { data } = await $authHost.get('api/payments_group', {
         params:
         {
@@ -83,6 +82,26 @@ export const fetchCardStatement = async (cardId) => {
             cardId
         }
     })
+    return data
+}
+
+export const updatePaymentsGroup = async (id, name) => {
+    const { data } = await $authHost.put('api/payments_group', { id, name })
+    return data
+}
+
+export const updatePayment = async (id, name, paymentParameters) => {
+    const { data } = await $authHost.put('api/payment', { id, name, paymentParameters })
+    return data
+}
+
+export const deletePaymentsGroup = async (id) => {
+    const { data } = await $authHost.delete('api/payments_group/' + id)
+    return data
+}
+
+export const deletePayment = async (id) => {
+    const { data } = await $authHost.delete('api/payment/' + id)
     return data
 }
 

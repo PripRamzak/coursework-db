@@ -19,6 +19,22 @@ export const activation = async (account_id, person_id) => {
     return jwtDecode(data.token)
 }
 
+export const fetchUsers = async (role) => {
+    const { data } = await $authHost.get('api/account',
+        {
+            params:
+            {
+                role
+            }
+        })
+    return data
+}
+
+export const changeRole = async (id, role) => {
+    const { data } = await $authHost.put('api/account/change_role', { id, role })
+    return data
+}
+
 export const exportAccounts = async () => {
     const { data } = await $authHost.get('api/account/table/export')
     return data

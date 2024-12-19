@@ -2,7 +2,7 @@ const ApiError = require('../error/apiError')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const sequelize = require('../db')
-const { Account } = require('../models/models')
+const { Account, Person } = require('../models/models')
 
 const generateJwt = (id, email, role, status, personId) => {
     return jwt.sign({ id, email, role, status, personId }, process.env.SECRET_KEY, { expiresIn: '24h' })
@@ -59,6 +59,23 @@ class AccountController {
         return res.json({ token })
     }
 
+    async getAll(req, res) {
+        const { role } = req.query
+        const accounts = await Account.findAll({ where: { role, status: 'Активирован' }, include: Person })
+
+        return res.json(accounts)
+    }
+
+    async changeRole(req, res) {
+        const { id, role } = req.body
+        
+        const account = await Account.findOne({ where: { id } })
+        account.role = role
+        await account.save()
+
+        return res.json(account)
+    }
+
     async check(req, res, next) {
         const token = generateJwt(req.account.id, req.account.email, req.account.role)
         return res.json({ token })
@@ -70,7 +87,7 @@ class AccountController {
             mapToModel: true
         })
 
-        return res.json({message: 'Export successed'})
+        return res.json({ message: 'Export successed' })
     }
 }
 

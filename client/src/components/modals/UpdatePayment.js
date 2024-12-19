@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { createPayment, fetchPaymentsGroup } from '../../http/paymentApi';
+import { updatePayment } from '../../http/paymentApi';
 
-function CreatePayment({ show, onHide, paymentsGroupId }) {
+function UpdatePayment({ show, onHide, payment }) {
     const [name, setName] = useState('')
     const [paymentParameters, setPaymentParameters] = useState([])
     const [alert, setAlert] = useState('')
 
-    const addPayment = async () => {
+    const update = async () => {
         setAlert('')
         try {
-            await createPayment(name, paymentsGroupId !== 0 ? paymentsGroupId : null, paymentParameters).then(() => {
+            await updatePayment(payment.id, name, paymentParameters).then(() => {
                 setName('')
                 onHide()
             })
@@ -32,6 +32,13 @@ function CreatePayment({ show, onHide, paymentsGroupId }) {
         setPaymentParameters(paymentParameters.map((parameter, index) => index === idx ? value : parameter))
     }
 
+    useEffect(() => {
+        if (payment) {
+            setName(payment.name)
+            setPaymentParameters(payment.parameters)
+        }
+    }, [payment])
+
     return (
         <Modal
             show={show}
@@ -40,7 +47,7 @@ function CreatePayment({ show, onHide, paymentsGroupId }) {
             centered>
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Создать платеж
+                    Обновить платеж
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -69,10 +76,10 @@ function CreatePayment({ show, onHide, paymentsGroupId }) {
             <Modal.Footer>
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
                 <Button className='mt-2' variant='outline-dark' onClick={addParameter}>Добавить новое свойство</Button>
-                <Button variant="outline-success" onClick={addPayment}>Добавить</Button>
+                <Button variant="outline-success" onClick={update}>Обновить</Button>
             </Modal.Footer>
         </Modal>
     );
 }
 
-export default CreatePayment;
+export default UpdatePayment;

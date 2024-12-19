@@ -5,6 +5,7 @@ const checkRole = require('../middleware/checkRoleMiddleware')
 
 router.post('/', checkRole('ADMIN'), loanTypeController.create)
 router.get('/', loanTypeController.getAll)
+router.put('/', checkRole('ADMIN'), loanTypeController.update)
 router.get('/table/export', checkRole('ADMIN'), loanTypeController.export)
 
 module.exports = router

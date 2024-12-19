@@ -4,7 +4,7 @@ import { createPayment, createUserPayment } from '../../http/paymentApi';
 import { Context } from '../..';
 import { fetchCards } from '../../http/cardApi';
 
-function CreateUserPayment({ show, onHide, payment }) {
+function CreateUserPayment({ show, onHide, onOk, payment }) {
     const { account, card } = useContext(Context)
 
     const [cardId, setCardId] = useState(0)
@@ -42,7 +42,7 @@ function CreateUserPayment({ show, onHide, payment }) {
         fetchCards(account.personId).then(data => card.setUserCards(data))
         setAmount(0)
         setData([])
-        onHide()
+        onOk()
     }
 
     useEffect(() => {

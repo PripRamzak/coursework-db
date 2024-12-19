@@ -66,6 +66,11 @@ export const fetchCardTypes = async () => {
     return data
 }
 
+export const updateCardType = async (id, name, description) => {
+    const { data } = await $authHost.put('/api/card_type', { id, name, description })
+    return data
+}
+
 export const exportCardTypes = async () => {
     const { data } = await $authHost.get('api/card_type/table/export')
     return data

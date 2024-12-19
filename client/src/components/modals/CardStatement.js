@@ -108,11 +108,13 @@ function CardStatement({ show, onHide, cardId }) {
                                 <td>{userPayment.type}</td>
                                 <td><div>{getTimeDate(userPayment.date)}</div></td>
                                 <td>
-                                    {userPayment.payment.parameters.map((parameter, index) => (
-                                        <div>
-                                            {parameter}:  {userPayment.data[index]}
-                                        </div>
-                                    ))
+                                    {userPayment.payment.parameters.map((parameter, index) => {
+                                        if (userPayment.data[index])
+                                            return (
+                                                <div>
+                                                    {parameter}:  {userPayment.data[index]}
+                                                </div>)
+                                    })
                                     }
                                 </td>
                             </tr>

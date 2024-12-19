@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import { Context } from '../index';
-import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE } from '../utils/consts';
+import { ACTIVATION_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, BANK_ROUTE, CARDS_ROUTE, PERSONAL_ACCOUNT_ROUTE, WORKER_ROUTE, LOANS_ROUTE, REQUESTS_ROUTE, PAYMENTS_ROUTE, USRES_ROUTE } from '../utils/consts';
 import { observer } from 'mobx-react-lite';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Dropdown } from 'react-bootstrap';
@@ -33,7 +33,17 @@ const NavBar = observer(() => {
                 {account.isAuth ?
                     <Nav className="ms-auto">
                         {account.role === 'ADMIN' &&
-                            <Button variant='light' className="me-2" onClick={() => navigate(ADMIN_ROUTE)}>Админ панель</Button>
+                            <Dropdown>
+                                <Dropdown.Toggle className='me-2' variant='light'>
+                                    Админ панель
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={() => navigate(ADMIN_ROUTE + USRES_ROUTE)}>Пользователи</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => navigate(ADMIN_ROUTE + PAYMENTS_ROUTE)}>Платежи</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => navigate(ADMIN_ROUTE + CARDS_ROUTE)}>Карты</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => navigate(ADMIN_ROUTE + LOANS_ROUTE)}>Кредиты</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown.Toggle>
+                            </Dropdown>
                         }
                         {account.role === 'WORKER' &&
                             <Dropdown>

@@ -65,7 +65,8 @@ const PersonPayments = observer(() => {
                             </Card>
                         </Col>
                         <CreateUserPayment show={paymentModalVisible}
-                            onHide={() => { setPaymentModalVisible(false); setSuccessfulPaymentVisible(true) }}
+                            onHide={() => setPaymentModalVisible(false)}
+                            onOk={() => { setPaymentModalVisible(false); setSuccessfulPaymentVisible(true) }}
                             payment={payment.payment} />
                         <SuccessfulPayment show={SuccessfulPaymentVisible}
                             onHide={() => setSuccessfulPaymentVisible(false)}

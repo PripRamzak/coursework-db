@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Form, Modal } from 'react-bootstrap';
-import { createPaymentsGroup, fetchPaymentsGroup } from '../../http/paymentApi';
+import { updatePaymentsGroup } from '../../http/paymentApi';
 
-function CreatePaymentsGroup({ show, onHide, parentId }) {
+function UpdatePaymentsGroup({ show, onHide, paymentsGroup }) {
     const [name, setName] = useState('')
     const [alert, setAlert] = useState('')
 
-    const addPaymentsGroup = async () => {
+    const update = async () => {
         setAlert('')
         try {
-            await createPaymentsGroup(name, parentId !== 0 ? parentId : null).then(() => {
+            await updatePaymentsGroup(paymentsGroup.id, name).then(() => {
                 setName('')
                 onHide()
             })
@@ -19,6 +19,11 @@ function CreatePaymentsGroup({ show, onHide, parentId }) {
         }
     }
 
+    useEffect(() => {
+        if (paymentsGroup)
+            setName(paymentsGroup.name)
+    }, [paymentsGroup])
+
     return (
         <Modal
             show={show}
@@ -27,7 +32,7 @@ function CreatePaymentsGroup({ show, onHide, parentId }) {
             centered>
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter">
-                    Создать группу платежей
+                    Обновить группу платежей
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -40,10 +45,10 @@ function CreatePaymentsGroup({ show, onHide, parentId }) {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="outline-danger" onClick={onHide}>Закрыть</Button>
-                <Button variant="outline-success" onClick={addPaymentsGroup}>Добавить</Button>
+                <Button variant="outline-success" onClick={update}>Обновить</Button>
             </Modal.Footer>
         </Modal>
     );
 }
 
-export default CreatePaymentsGroup;
+export default UpdatePaymentsGroup;

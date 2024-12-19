@@ -72,6 +72,11 @@ export const fetchLoanTypes = async () => {
     return data
 }
 
+export const updateLoanTypes = async (id, name, min_amount, max_amount, min_term, max_term, annual_interest_rate, description) => {
+    const { data } = await $authHost.put('api/loan_type', { id, name, min_amount, max_amount, min_term, max_term, annual_interest_rate, description })
+    return data
+}
+
 export const exportLoanTypes = async () => {
     const { data } = await $authHost.get('api/loan_type/table/export')
     return data
